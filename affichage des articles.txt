@@ -1,0 +1,264 @@
+affichage des articles
+on va prendre un exemple
+DROP TABLE IF EXISTS couleur;           -- déclinaison
+CREATE TABLE couleur (
+id_couleur INT AUTO_INCREMENT PRIMARY KEY
+, libelle VARCHAR(255)
+);
+
+INSERT INTO couleur(id_couleur,libelle) VALUES 
+(1,'non défini'),
+(2,'rouge'),(3,'bleu'),
+(4,'vert'),(5, 'noir');
+
+
+DROP TABLE IF EXISTS marque;             -- filtre (vert)
+CREATE TABLE marque (
+id_marque INT AUTO_INCREMENT PRIMARY KEY
+, libelle VARCHAR(255)
+);
+
+INSERT INTO marque(id_marque,libelle) VALUES 
+(1,'autre'),(2,'papermate'),
+(3,'bic'),
+(4,'mont blanc');
+
+
+DROP TABLE IF EXISTS stylo;
+CREATE TABLE stylo (
+id_stylo INT AUTO_INCREMENT
+, nom_stylo VARCHAR(255)
+, prix_stylo NUMERIC(6,2) default 10
+, image VARCHAR(255) default 'stylo_no_photo.png'
+, stock INT default 4
+,couleur_id INT default 1
+-- , descriction VARCHAR
+, marque_id INT
+, FOREIGN KEY  (couleur_id) REFERENCES couleur(id_couleur)
+, FOREIGN KEY  (marque_id) REFERENCES marque(id_marque)
+, PRIMARY KEY(id_stylo)
+);
+
+INSERT INTO stylo(nom_stylo, prix_stylo, couleur_id) VALUES    -- si on affiche les couleurs
+('stylo plume',2.5,1),                                         -- les couleurs doivent avoir une valeur
+('stylo plume 2',3.4,1);  
+
+INSERT INTO stylo(nom_stylo, prix_stylo) VALUES    -- si on affiche les couleurs
+('stylo plume 3',2.5),                                         -- les couleurs doivent avoir une valeur
+('stylo plume 4',3.4); 
+
+INSERT INTO stylo(nom_stylo, prix_stylo, stock, image, couleur_id, marque_id) VALUES 
+('stylo bleu papermate',2.5,'10','stylo_papermate_bleu.png',3,2),
+('stylo noir papermate',2.5,'10','stylo_papermate_noir.png',5,2),
+('stylo rouge papermate',2.5,'10','stylo_papermate_rouge.png',2,2),
+('stylo vert papermate',2.5,'10','stylo_papermate_vert.png',4,2),
+('stylo papermate',2.5,'10','stylo_papermate_stylo_feutre.png',1,2),
+('stylo bleu bic',2.5,'10','stylo_bic_bleu.png',3,3),
+('stylo noir bic',2.5,'10','stylo_bic_noir.png',5,3),
+('stylo rouge bic',2.5,'10','stylo_bic_rouge.png',2,3),
+('stylo vert bic',2.5,'10','stylo_bic_vert.png',4,3),
+('stylo bic',2.5,'10','stylo_bic.png',1,3),
+
+('stylo meisterstuck',435,'2','stylo_meisterstuck_classique_dore.png',1,4),
+('stylo marilyn monroe',835,'2','stylo_muses_marilyn_monroe.png',2,4),
+('stylo grace de monaco',1190,'2','stylo_grace_de_monaco.png',1,4),
+('stylo star walker',435,'2','stylo_star_walker.png',1,4);
+affichage des produits pour le client
+méthode client_article_show du contrôleur client_article
+sql = '''
+        SELECT id_stylo AS id_article
+               , nom_stylo AS nom
+               , prix_stylo AS prix
+               , stock AS stock
+        FROM stylo
+        ORDER BY nom_stylo;
+        '''
+mycursor.execute(sql)
+stylos = mycursor.fetchall()
+articles = stylos
+sql = '''
+            SELECT id_couleur  AS id_type_article
+                    ,libelle
+            FROM couleur
+            ORDER BY  libelle
+            '''
+mycursor.execute(sql)
+couleurs = mycursor.fetchall()
+types_article = couleurs
+sql = "SELECT * , 10 as prix , concat('nomarticle',stylo_id) as nom FROM ligne_panier"
+mycursor.execute(sql)
+articles_panier = mycursor.fetchall()
+prix_total = 123  # requete à faire
+ajouter un article dans le panier
+id_client = session['id_user']
+id_article = request.form.get('id_article')
+quantite = request.form.get('quantite')
+
+sql = "SELECT * FROM ligne_panier WHERE stylo_id = %s AND utilisateur_id=%s"
+mycursor.execute(sql, (id_article, id_client))
+article_panier = mycursor.fetchone()
+
+mycursor.execute("SELECT * FROM stylo WHERE id_stylo = %s", (id_article))
+article = mycursor.fetchone()
+
+if not (article_panier is None) and article_panier['quantite'] >= 1:
+    tuple_update = (quantite, id_client, id_article)
+    sql = "UPDATE ligne_panier SET quantite = quantite+%s WHERE utilisateur_id = %s AND stylo_id=%s"
+    mycursor.execute(sql, tuple_update)
+else:
+    tuple_insert = (id_client, id_article, quantite)
+    sql = "INSERT INTO ligne_panier(utilisateur_id,stylo_id,quantite, date_ajout) VALUES (%s,%s,%s, current_timestamp )"
+    mycursor.execute(sql, tuple_insert)
+
+get_db().commit()
+si gestion du stock
+# recherche du stock de l'article
+if article_stock['stock'] >= int(quantite):
+
+
+else:
+    flash(u'Stock insuffisant')
+
+
+        tuple_update = (quantite, id_article)
+        sql = "UPDATE stylo SET stock = stock-%s WHERE  id_stylo=%s"
+        mycursor.execute(sql, tuple_update)
+supprimer un article dans le panier
+id_client = session['id_user']
+id_article = request.form.get('id_article')
+quantite = request.form.get('quantite')
+
+print('supprime client ',id_client, 'article', id_article, 'quantite :', quantite)
+
+sql = "SELECT * FROM ligne_panier WHERE utilisateur_id = %s and article_id = %s"
+mycursor.execute(sql, (id_client, id_article))
+article_panier = mycursor.fetchone()
+
+if not(article_panier is None) and article_panier['quantite'] > 1:
+    sql = "UPDATE ligne_panier SET quantite = quantite-%s  WHERE utilisateur_id = %s AND article_id=%s"
+    mycursor.execute(sql, (quantite, id_client, id_article))
+else:
+    sql = "DELETE FROM ligne_panier WHERE utilisateur_id = %s AND article_id=%s"
+    mycursor.execute(sql, (id_client, id_article))
+
+get_db().commit()
+mycursor.execute("UPDATE ***** SET stock = stock + %s WHERE id=%s", (quantite,id_article))
+
+vider le panier
+version 1
+
+id_client = session['id_user']
+sql = "DELETE FROM ligne_panier WHERE  utilisateur_id = %s"
+retour = mycursor.execute(sql, (id_client))
+get_db().commit()
+version 2
+
+id_client = session['id_user']
+sql = "SELECT * FROM ligne_panier WHERE  utilisateur_id = %s"
+retour = mycursor.execute(sql, (id_client))
+items_panier = mycursor.fetchall()
+for item in items_panier:
+    sql = "DELETE FROM ligne_panier WHERE  article_id = %s and utilisateur_id = %s"
+    # remettre dans le stock les articles
+    mycursor.execute(sql,(item['article_id'], id_client))
+    get_db().commit()
+mycursor.execute("UPDATE ***** SET stock = stock + %s WHERE id=%s", (item['quantite'], item['article_id']))
+valider la commande
+
+DROP TABLE IF EXISTS ligne_commande,ligne_panier,commande,etat,stylo,couleur;
+
+CREATE TABLE stylo (
+id_stylo INT AUTO_INCREMENT
+, nom_stylo VARCHAR(255)
+, prix_stylo NUMERIC(6,2) default 10
+, image VARCHAR(255) default 'stylo.jpeg'
+, stock INT default 4
+-- , descriction VARCHAR
+-- , marque_id INT
+, PRIMARY KEY(id_stylo)
+);
+
+INSERT INTO stylo(nom_stylo, prix_stylo) VALUES 
+('stylo bille',2.5),
+('stylo plume',3.4); 
+
+CREATE TABLE couleur (
+id_couleur INT AUTO_INCREMENT PRIMARY KEY
+, libelle VARCHAR(255)
+);
+
+INSERT INTO couleur(libelle) VALUES 
+('rouge'),('bleu'),
+('vert'); 
+
+
+CREATE TABLE etat (
+  id_etat int(11) NOT NULL AUTO_INCREMENT,
+  libelle varchar(255),
+  PRIMARY KEY (id_etat)
+);
+
+
+INSERT INTO etat(libelle) VALUES ('en cours de traitement'),('expédié'),('validé');
+
+CREATE TABLE commande(
+   id_commande INT AUTO_INCREMENT,
+   date_achat DATETIME,
+   etat_id INT NOT NULL,
+   utilisateur_id INT NOT NULL,
+   PRIMARY KEY(id_commande),
+   FOREIGN KEY(etat_id) REFERENCES etat(id_etat),
+   FOREIGN KEY(utilisateur_id) REFERENCES utilisateur(id_utilisateur)
+);
+
+CREATE TABLE ligne_commande (
+  commande_id int(11),
+  stylo_id int(11),
+  prix decimal(10,2),
+  quantite int(11),
+  PRIMARY KEY (commande_id,stylo_id),
+  FOREIGN KEY (commande_id) REFERENCES commande (id_commande),
+  FOREIGN KEY (stylo_id) REFERENCES stylo (id_stylo)
+);
+
+CREATE TABLE ligne_panier (
+utilisateur_id INT,
+stylo_id INT,
+date_ajout DATETIME,
+quantite INT,
+PRIMARY KEY (utilisateur_id,stylo_id,date_ajout),
+FOREIGN KEY (utilisateur_id) REFERENCES utilisateur (id_utilisateur),
+FOREIGN KEY (stylo_id) REFERENCES stylo (id_stylo)
+);  
+
+    id_client = session['id_user']
+    sql = "SELECT * FROM ligne_panier WHERE utilisateur_id=%s"
+    mycursor.execute(sql, id_client)
+    items_panier = mycursor.fetchall()
+    if items_panier is None or len(items_panier) < 1:
+        flash(u'Pas d\'articles dans le panier')
+        return redirect(url_for('client_index'))
+
+    date_commande = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    tuple_insert = (date_commande, id_client, '1')  # 1 : etat de commande
+    sql = "INSERT INTO commande(date_achat,utilisateur_id,etat_id) VALUES (%s,%s,%s)"
+    mycursor.execute(sql, tuple_insert)
+    sql = "SELECT last_insert_id() as last_insert_id"
+    mycursor.execute(sql)
+    commande_id = mycursor.fetchone()
+    print(commande_id, tuple_insert)
+
+    for item in items_panier:
+        tuple_insert = (id_client, item['stylo_id'])
+        sql = "DELETE FROM ligne_panier WHERE utilisateur_id = %s AND stylo_id = %s"
+        mycursor.execute(sql,tuple_insert)
+        sql = "SELECT prix FROM stylo WHERE id = %s"
+        mycursor.execute(sql, item['stylo_id'])
+        prix = mycursor.fetchone()
+        sql = "INSERT INTO ligne_commande(commande_id,stylo_id, prix, quantite) VALUES (%s,%s,%s,%s)"
+        tuple_insert = (commande_id['last_insert_id'], item['stylo_id'], prix['prix'], item['quantite'])
+        print(tuple_insert)
+        mycursor.execute(sql, tuple_insert)
+    get_db().commit()
+    flash(u'Commande ajoutée')
+    return redirect('/client/article/show')

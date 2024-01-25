@@ -1,0 +1,58 @@
+création de la table user
+#!/bin/bash
+
+# mysql --user=login --password=secret --host=localhost --database=BDD_login_sae
+
+
+HOST=localhost
+LOGIN=login
+PASSWORD=secret
+DATABASE=BDD_login_sae
+
+
+echo "DROP DATABASE  IF EXISTS ${DATABASE}; CREATE DATABASE ${DATABASE};" | mysql --user=${LOGIN} --password=${PASSWORD} --host=${HOST} ${DATABASE}
+CREATE TABLE utilisateur(
+   id_utilisateur INT AUTO_INCREMENT,
+   login VARCHAR(255),
+   email VARCHAR(255),
+   nom VARCHAR(255),         -- ou pseudo
+   password VARCHAR(255),
+   role VARCHAR(255),
+
+   est_actif tinyint(1),
+   -- token_email VARCHAR(255),    -- validation et mdp oublié
+   -- token_email_date DATE(),
+
+   -- go_auth_token VARCHAR(255), 
+   -- go_username_token VARCHAR(255),  -idem facebook twitter
+
+   PRIMARY KEY(id_utilisateur)
+)ENGINE=InnoDB  DEFAULT CHARSET utf8mb4;  
+
+
+
+
+Insérer les enregistrements
+
+
+
+
+requête
+requête 1
+solution
+SELECT login,role,id_utilisateur,password FROM utilisateur WHERE login=%s
+solution 2
+attention SELECT * FROM utilisateur WHERE password=%s AND login=%s ne fonctionne pas car le mot de passe est crypté
+
+check_password_hash(user['password'], password)
+requête 2 et 3
+ SELECT * FROM utilisateur WHERE login=%s OR email=%s
+INSERT INTO utilisateur (login,email,password,role) VALUES (%s, %s, %s, %s);
+https://www.w3schools.com/sql/func_mysql_last_insert_id.asp
+
+SELECT last_insert_id() AS last_insert_id;
+SELECT max(id) FROM table sur postgre
+
+SELECT IDENT_CURRENT('tablename') sur sqlserver (microsoft)
+
+avant l’insert SELECT mytable_seq.nextval MyTableID FROM DUAL
