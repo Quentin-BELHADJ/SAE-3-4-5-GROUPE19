@@ -8,7 +8,7 @@ def get_db():
         #
         db = g._database = pymysql.connect(
             host="localhost",
-            user="audrick",
+            user="bidule",
             password="mdp",
             database="S2",
             charset='utf8mb4',
