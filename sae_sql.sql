@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS est_de;
+
 DROP TABLE IF EXISTS ligne_panier;
 DROP TABLE IF EXISTS ligne_commande;
 DROP TABLE IF EXISTS commande;
@@ -14,13 +14,13 @@ CREATE TABLE couleur(
    id_couleur INT AUTO_INCREMENT,
    libelle_couleur VARCHAR(50),
    PRIMARY KEY(id_couleur)
-);
+)DEFAULT CHARSET utf8mb4;
 
 CREATE TABLE categorie(
    id_categorie INT AUTO_INCREMENT,
    libelle_categorie VARCHAR(50),
    PRIMARY KEY(id_categorie)
-);
+)DEFAULT CHARSET utf8mb4;
 
 CREATE TABLE utilisateur(
    id_utilisateur INT AUTO_INCREMENT,
@@ -31,25 +31,25 @@ CREATE TABLE utilisateur(
    role VARCHAR(255),
    est_actif SMALLINT,
    PRIMARY KEY(id_utilisateur)
-);
+)DEFAULT CHARSET utf8mb4;
 
 CREATE TABLE etat(
    id_etat INT AUTO_INCREMENT,
    libelle_etat VARCHAR(40),
    PRIMARY KEY(id_etat)
-);
+)DEFAULT CHARSET utf8mb4;
 
 CREATE TABLE marque(
    id_marque INT AUTO_INCREMENT,
    libelle_marque VARCHAR(50),
    PRIMARY KEY(id_marque)
-);
+)DEFAULT CHARSET utf8mb4;
 
 CREATE TABLE fournisseur(
    id_fournisseur INT AUTO_INCREMENT,
    libelle_fournisseur VARCHAR(50),
    PRIMARY KEY(id_fournisseur)
-);
+)DEFAULT CHARSET utf8mb4;
 
 CREATE TABLE lunette(
    id_lunette INT AUTO_INCREMENT,
@@ -69,7 +69,7 @@ CREATE TABLE lunette(
    FOREIGN KEY(id_fournisseur) REFERENCES fournisseur(id_fournisseur),
    FOREIGN KEY(id_categorie) REFERENCES categorie(id_categorie),
    FOREIGN KEY(id_couleur) REFERENCES couleur(id_couleur)
-);
+)DEFAULT CHARSET utf8mb4;
 
 CREATE TABLE commande(
    id_commande INT AUTO_INCREMENT,
@@ -79,7 +79,7 @@ CREATE TABLE commande(
    PRIMARY KEY(id_commande),
    FOREIGN KEY(id_etat) REFERENCES etat(id_etat),
    FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur)
-);
+)DEFAULT CHARSET utf8mb4;
 
 CREATE TABLE ligne_commande(
    id_lunette INT,
@@ -89,7 +89,7 @@ CREATE TABLE ligne_commande(
    PRIMARY KEY(id_lunette, id_commande),
    FOREIGN KEY(id_lunette) REFERENCES lunette(id_lunette),
    FOREIGN KEY(id_commande) REFERENCES commande(id_commande)
-);
+)DEFAULT CHARSET utf8mb4;
 
 CREATE TABLE ligne_panier(
    id_lunette INT,
@@ -99,7 +99,7 @@ CREATE TABLE ligne_panier(
    PRIMARY KEY(id_lunette, id_utilisateur),
    FOREIGN KEY(id_lunette) REFERENCES lunette(id_lunette),
    FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur)
-);
+)DEFAULT CHARSET utf8mb4;
 
 
 
@@ -163,3 +163,9 @@ INSERT INTO lunette (id_lunette, libelle_lunette, prix_lunette, id_couleur, id_c
 (14, 'Lunettes de sport bleues', 400.00, 4, 4, 4, 1),
 (15, 'Lunettes pour enfant rouges', 70.00, 3, 4, 3, 2),
 (16, 'Lunettes de mode jaunes', 300.00, 5, 5, 5, 4);
+
+
+INSERT INTO etat(id_etat, libelle_etat) VALUES (1,'en attente'),
+                                               (2,'expédié'),
+                                               (3,'validé'),
+                                               (4,'confirmé');
