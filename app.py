@@ -32,7 +32,6 @@ def close_connection(exception):
     if db is not None:
         db.close()
 
-
 @app.route('/')
 def show_accueil():
     return render_template('auth/layout.html')

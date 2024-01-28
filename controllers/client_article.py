@@ -14,19 +14,29 @@ def client_article_show():                                 # remplace client_ind
     mycursor = get_db().cursor()
     id_client = session['id_user']
 
-    sql = '''   selection des articles   '''
+    sql = '''SELECT id_lunette AS id_article, libelle_lunette as nom, prix_lunette AS prix FROM lunette ORDER BY libelle_lunette;'''
+    mycursor.execute(sql)
+    lunettes = mycursor.fetchall()
+
+    sql = '''SELECT id_marque AS id_type_article, libelle_marque AS libelle FROM marque ORDER BY libelle;'''
+    mycursor.execute(sql)
+    marques = mycursor.fetchall()
+    
     list_param = []
     condition_and = ""
     # utilisation du filtre
     sql3=''' prise en compte des commentaires et des notes dans le SQL    '''
-    articles =[]
+    articles = lunettes
 
 
     # pour le filtre
-    types_article = []
-
+    types_article = marques
 
     articles_panier = []
+    """
+    sql = "SELECT * , 10 as prix , concat('nomarticle',lunette_id) as nom FROM ligne_panier"
+    mycursor.execute(sql)
+    articles_panier = mycursor.fetchall()"""
 
     if len(articles_panier) >= 1:
         sql = ''' calcul du prix total du panier '''
