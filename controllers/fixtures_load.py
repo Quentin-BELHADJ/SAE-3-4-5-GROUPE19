@@ -95,7 +95,7 @@ def fct_fixtures_load():
    id_etat INT NOT NULL,
    id_utilisateur INT NOT NULL,
    PRIMARY KEY(id_commande),
-   FOREIGN KEY(id_etat) REFERENCES Etat(id_etat),
+   FOREIGN KEY(id_etat) REFERENCES etat(id_etat),
    FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur)
 )DEFAULT CHARSET utf8mb4;
      '''
