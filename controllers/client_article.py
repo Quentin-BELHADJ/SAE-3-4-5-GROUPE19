@@ -14,7 +14,8 @@ def client_article_show():                                 # remplace client_ind
     mycursor = get_db().cursor()
     id_client = session['id_user']
 
-    sql = '''SELECT id_lunette AS id_article, libelle_lunette as nom, prix_lunette AS prix FROM lunette ORDER BY libelle_lunette;'''
+    sql = '''SELECT id_lunette AS id_article, libelle_lunette as nom, prix_lunette AS prix , CONCAT(libelle_lunette,'.jpg') AS image
+    FROM lunette ORDER BY libelle_lunette;'''
     mycursor.execute(sql)
     lunettes = mycursor.fetchall()
 
