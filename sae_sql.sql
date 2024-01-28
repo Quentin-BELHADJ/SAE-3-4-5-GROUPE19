@@ -123,12 +123,12 @@ INSERT INTO couleur (id_couleur, libelle_couleur) VALUES
 (5, 'Vert');
 
 -- Insertion de données dans la table categorie
-INSERT INTO categorie (id_categorie, libelle_categorie) VALUES
-(1, 'Lunettes de soleil'),
-(2, 'Lunettes de vue'),
-(3, 'Lunettes de sport'),
-(4, 'Lunettes pour enfant'),
-(5, 'Lunettes de mode');
+   INSERT INTO categorie (id_categorie, libelle_categorie) VALUES
+   (1, 'Lunettes de soleil'),
+   (2, 'Lunettes de vue'),
+   (3, 'Lunettes de sport'),
+   (4, 'Lunettes pour enfant'),
+   (5, 'Lunettes de mode');
 
 -- Insertion de données dans la table marque
 INSERT INTO marque (id_marque, libelle_marque) VALUES
