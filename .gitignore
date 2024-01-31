@@ -3,6 +3,7 @@ connexion_db.py
 .idea/vcs.xml
 connexion_db.py
 connexion_db.py
+.env
 controllers/__pycache__/auth_security.cpython-37.pyc
 controllers/__pycache__/client_article.cpython-37.pyc
 controllers/__pycache__/fixtures_load.cpython-37.pyc
