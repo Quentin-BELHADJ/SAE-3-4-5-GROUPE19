@@ -170,23 +170,23 @@ def fct_fixtures_load():
     (4, 'Safilo');'''
     mycursor.execute(sql)
 
-    sql = '''   INSERT INTO lunette (id_lunette, libelle_lunette, prix_lunette, id_couleur, id_categorie, id_marque, id_fournisseur) VALUES
+    sql = '''
+    INSERT INTO lunette (id_lunette, libelle_lunette, prix_lunette, id_couleur, id_categorie, id_marque, id_fournisseur) VALUES
     (1, 'Aviator', 200.00, 1, 1, 1, 1),
     (2, 'Round Metal', 150.00, 2, 2, 2, 2),
     (3, 'Wayfarer', 180.00, 3, 1, 1, 3),
     (4, 'Clubmaster', 250.00, 1, 3, 3, 4),
     (5, 'Lunettes de sport', 300.00, 4, 4, 5, 1),
-    (6, 'Lunettes de mode', 400.00, 5, 5, 4, 2),
-    (7, 'Lunettes de soleil aviateur noires', 150.00, 1, 1, 1, 1),
-    (8, 'Lunettes de vue rondes blanches', 120.00, 2, 2, 2, 2),
-    (9, 'Lunettes de sport rouges', 350.00, 3, 4, 5, 3),
-    (10, 'Lunettes pour enfant bleues', 50.00, 4, 4, 2, 1),
-    (11, 'Lunettes de mode vertes', 250.00, 5, 5, 2, 2),
-    (12, 'Lunettes de soleil aviateur rouges', 180.00, 3, 1, 1, 3),
-    (13, 'Lunettes de vue rectangulaires noires', 160.00, 1, 2, 1, 4),
-    (14, 'Lunettes de sport bleues', 400.00, 4, 4, 4, 1),
-    (15, 'Lunettes pour enfant rouges', 70.00, 3, 4, 3, 2),
-    (16, 'Lunettes de mode jaunes', 300.00, 5, 5, 5, 4);'''
+    (6, 'Lunettes de vue rondes', 120.00, 2, 2, 2, 2),
+    (7, 'Lunettes pour enfant', 50.00, 4, 4, 2, 1),
+    (8, 'Lunettes de mode', 250.00, 5, 5, 2, 2),
+    (9, 'Lunettes de vue rectangulaires', 160.00, 1, 2, 1, 4),
+    (10, 'Steampunk', 100.00, 1, 2, 3, 3),
+    (11, 'Lunettes anti lumiere bleu', 90.00, 1, 2, 1, 4),
+    (12, 'Lunettes triangle', 999.99, 1, 2, 1, 4),
+    (13, 'Lunettes de ski', 124.99, 1, 2, 1, 4),
+    (14, 'Lunettes de natation', 20.99, 1, 3, 2, 1),
+    (15, 'Lunettes sans branches', 199.99, 2, 4, 1, 4);'''
     mycursor.execute(sql)
 
     sql = ''' 
