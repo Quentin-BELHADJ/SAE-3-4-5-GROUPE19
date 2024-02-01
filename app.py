@@ -27,7 +27,8 @@ app.secret_key = 'une cle(token) : grain de sel(any random string)'
 import os                                 # à ajouter
 from dotenv import load_dotenv            # à ajouter
 project_folder = os.path.expanduser('~/SAE-3-4-5-GROUPE19')  # adjust as appropriate (avec le dossier où se trouve le fichier .env et app.py)
-load_dotenv(os.path.join(project_folder, '.env'))
+load_dotenv()
+
 
 def get_db():
     if 'db' not in g:
@@ -42,11 +43,11 @@ def get_db():
     return g.db
 
 @app.teardown_appcontext
-def close_connection(exception):
-    db = getattr(g, '_database', None)
+def teardown_db(exception):
+    db = g.pop('db', None)
     if db is not None:
         db.close()
-
+        
 @app.route('/')
 def show_accueil():
     return render_template('auth/layout.html')

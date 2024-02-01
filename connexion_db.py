@@ -1,6 +1,8 @@
 from flask import Flask, request, render_template, redirect, url_for, abort, flash, session, g
-
 import pymysql.cursors
+import os                                 # à ajouter
+from dotenv import load_dotenv            # à ajouter
+load_dotenv()
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -8,9 +10,9 @@ def get_db():
         #
         db = g._database = pymysql.connect(
             host="localhost",
-            user="gaelr",
-            password="Tristan97490@",
-            database="sae345",
+            user="audrick",
+            password="mdp",
+            database="S2",
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
         )
