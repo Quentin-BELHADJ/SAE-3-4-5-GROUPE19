@@ -8,3 +8,4 @@ controllers/__pycache__/auth_security.cpython-37.pyc
 controllers/__pycache__/client_article.cpython-37.pyc
 controllers/__pycache__/fixtures_load.cpython-37.pyc
 __pycache__/connexion_db.cpython-37.pyc
+app.py
