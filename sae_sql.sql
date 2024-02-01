@@ -57,8 +57,6 @@ CREATE TABLE lunette(
    indice_protection INT,
    taille_monture INT,
    prix_lunette DECIMAL(12,2),
-   couleur_id INT,
-   categorie_id INT,
    marque_id INT NOT NULL,
    fournisseur_id INT NOT NULL,
    categorie_id INT NOT NULL,
@@ -92,7 +90,7 @@ CREATE TABLE ligne_commande(
 
 CREATE TABLE ligne_panier(
    lunette_id INT,
-   id_utilisateur INT,
+   utilisateur_id INT,
    quantite INT,
    date_ajout DATE,
    PRIMARY KEY(lunette_id, utilisateur_id),
@@ -145,7 +143,7 @@ INSERT INTO fournisseur (id_fournisseur, libelle_fournisseur) VALUES
 (4, 'Safilo');
 
 -- Insertion de données dans la table lunette
-INSERT INTO lunette (id_lunette, libelle_lunette, prix_lunette, id_couleur, id_categorie, id_marque, id_fournisseur) VALUES
+INSERT INTO lunette (id_lunette, libelle_lunette, prix_lunette, couleur_id, categorie_id, marque_id, fournisseur_id) VALUES
 (1, 'Aviator', 200.00, 1, 1, 1, 1),
 (2, 'Round Metal', 150.00, 2, 2, 2, 2),
 (3, 'Wayfarer', 180.00, 3, 1, 1, 3),
