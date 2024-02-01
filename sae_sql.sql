@@ -164,3 +164,7 @@ INSERT INTO etat(id_etat, libelle_etat) VALUES (1,'en attente'),
                                                (2,'expédié'),
                                                (3,'validé'),
                                                (4,'confirmé');
+
+
+INSERT INTO ligne_panier(lunette_id,utilisateur_id,quantite,date_ajout)
+VALUES (1,2,1,"2024-01-01"), (2,2,2,"2024-01-01")

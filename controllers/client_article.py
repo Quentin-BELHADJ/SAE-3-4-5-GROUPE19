@@ -33,11 +33,11 @@ def client_article_show():                                 # remplace client_ind
     # pour le filtre
     types_article = marques
 
+    list_param = [id_client]
     articles_panier = []
-    """
-    sql = "SELECT * , 10 as prix , concat('nomarticle',lunette_id) as nom FROM ligne_panier"
-    mycursor.execute(sql)
-    articles_panier = mycursor.fetchall()"""
+    sql = """SELECT lunette.libelle_lunette AS nom,quantite, prix_lunette AS prix FROM ligne_panier LEFT JOIN lunette ON ligne_panier.lunette_id = lunette.id_lunette WHERE ligne_panier.utilisateur_id = %s;"""
+    mycursor.execute(sql, list_param)
+    articles_panier = mycursor.fetchall()
 
     if len(articles_panier) >= 1:
         sql = ''' calcul du prix total du panier '''
