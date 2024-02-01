@@ -59,45 +59,45 @@ CREATE TABLE lunette(
    prix_lunette DECIMAL(12,2),
    couleur_id INT,
    categorie_id INT,
-   id_marque INT NOT NULL,
-   id_fournisseur INT NOT NULL,
-   id_categorie INT NOT NULL,
-   id_couleur INT NOT NULL,
+   marque_id INT NOT NULL,
+   fournisseur_id INT NOT NULL,
+   categorie_id INT NOT NULL,
+   couleur_id INT NOT NULL,
    PRIMARY KEY(id_lunette),
-   FOREIGN KEY(id_marque) REFERENCES marque(id_marque),
-   FOREIGN KEY(id_fournisseur) REFERENCES fournisseur(id_fournisseur),
-   FOREIGN KEY(id_categorie) REFERENCES categorie(id_categorie),
-   FOREIGN KEY(id_couleur) REFERENCES couleur(id_couleur)
+   FOREIGN KEY(marque_id) REFERENCES marque(id_marque),
+   FOREIGN KEY(fournisseur_id) REFERENCES fournisseur(id_fournisseur),
+   FOREIGN KEY(categorie_id) REFERENCES categorie(id_categorie),
+   FOREIGN KEY(couleur_id) REFERENCES couleur(id_couleur)
 )DEFAULT CHARSET utf8mb4;
 
 CREATE TABLE commande(
    id_commande INT AUTO_INCREMENT,
    date_achat DATE,
-   id_etat INT NOT NULL,
-   id_utilisateur INT NOT NULL,
+   etat_id INT NOT NULL,
+   utilisateur_id INT NOT NULL,
    PRIMARY KEY(id_commande),
-   FOREIGN KEY(id_etat) REFERENCES etat(id_etat),
-   FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur)
+   FOREIGN KEY(etat_id) REFERENCES etat(id_etat),
+   FOREIGN KEY(utilisateur_id) REFERENCES utilisateur(id_utilisateur)
 )DEFAULT CHARSET utf8mb4;
 
 CREATE TABLE ligne_commande(
-   id_lunette INT,
-   id_commande INT,
+   lunette_id INT,
+   commande_id INT,
    prix DECIMAL(12,2),
    quantite INT,
-   PRIMARY KEY(id_lunette, id_commande),
-   FOREIGN KEY(id_lunette) REFERENCES lunette(id_lunette),
-   FOREIGN KEY(id_commande) REFERENCES commande(id_commande)
+   PRIMARY KEY(lunette_id, commande_id),
+   FOREIGN KEY(lunette_id) REFERENCES lunette(id_lunette),
+   FOREIGN KEY(commande_id) REFERENCES commande(id_commande)
 )DEFAULT CHARSET utf8mb4;
 
 CREATE TABLE ligne_panier(
-   id_lunette INT,
+   lunette_id INT,
    id_utilisateur INT,
    quantite INT,
    date_ajout DATE,
-   PRIMARY KEY(id_lunette, id_utilisateur),
-   FOREIGN KEY(id_lunette) REFERENCES lunette(id_lunette),
-   FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur)
+   PRIMARY KEY(lunette_id, utilisateur_id),
+   FOREIGN KEY(lunette_id) REFERENCES lunette(id_lunette),
+   FOREIGN KEY(utilisateur_id) REFERENCES utilisateur(id_utilisateur)
 )DEFAULT CHARSET utf8mb4;
 
 
