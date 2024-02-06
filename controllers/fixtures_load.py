@@ -75,7 +75,6 @@ def fct_fixtures_load():
    taille_monture INT,
    prix_lunette DECIMAL(12,2),
    couleur_id INT,
-   categorie_id INT,
    marque_id INT NOT NULL,
    fournisseur_id INT NOT NULL,
    categorie_id INT NOT NULL,
