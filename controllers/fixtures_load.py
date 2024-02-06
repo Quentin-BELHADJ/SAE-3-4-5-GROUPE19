@@ -116,7 +116,7 @@ def fct_fixtures_load():
     sql = ''' 
    CREATE TABLE ligne_panier(
    lunette_id INT,
-   id_utilisateur INT,
+   utilisateur_id INT,
    quantite INT,
    date_ajout DATE,
    PRIMARY KEY(lunette_id, utilisateur_id),
