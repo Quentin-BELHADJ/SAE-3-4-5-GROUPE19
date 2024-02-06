@@ -9,19 +9,19 @@ DROP TABLE IF EXISTS couleur;
 DROP TABLE IF EXISTS categorie;
 DROP TABLE IF EXISTS utilisateur;
 
-CREATE TABLE couleur(
+CREATE TABLE IF NOT EXISTS couleur(
    id_couleur INT AUTO_INCREMENT,
    libelle_couleur VARCHAR(50),
    PRIMARY KEY(id_couleur)
 )DEFAULT CHARSET utf8mb4;
 
-CREATE TABLE categorie(
+CREATE TABLE IF NOT EXISTS categorie(
    id_categorie INT AUTO_INCREMENT,
    libelle_categorie VARCHAR(50),
    PRIMARY KEY(id_categorie)
 )DEFAULT CHARSET utf8mb4;
 
-CREATE TABLE utilisateur(
+CREATE TABLE IF NOT EXISTS utilisateur(
    id_utilisateur INT AUTO_INCREMENT,
    login VARCHAR(50),
    email VARCHAR(255),
@@ -32,25 +32,25 @@ CREATE TABLE utilisateur(
    PRIMARY KEY(id_utilisateur)
 )DEFAULT CHARSET utf8mb4;
 
-CREATE TABLE etat(
+CREATE TABLE IF NOT EXISTS etat(
    id_etat INT AUTO_INCREMENT,
    libelle_etat VARCHAR(40),
    PRIMARY KEY(id_etat)
 )DEFAULT CHARSET utf8mb4;
 
-CREATE TABLE marque(
+CREATE TABLE IF NOT EXISTS marque(
    id_marque INT AUTO_INCREMENT,
    libelle_marque VARCHAR(50),
    PRIMARY KEY(id_marque)
 )DEFAULT CHARSET utf8mb4;
 
-CREATE TABLE fournisseur(
+CREATE TABLE IF NOT EXISTS fournisseur(
    id_fournisseur INT AUTO_INCREMENT,
    libelle_fournisseur VARCHAR(50),
    PRIMARY KEY(id_fournisseur)
 )DEFAULT CHARSET utf8mb4;
 
-CREATE TABLE lunette(
+CREATE TABLE IF NOT EXISTS lunette(
    id_lunette INT AUTO_INCREMENT,
    libelle_lunette VARCHAR(255),
    sexe VARCHAR(31),
@@ -68,7 +68,7 @@ CREATE TABLE lunette(
    FOREIGN KEY(couleur_id) REFERENCES couleur(id_couleur)
 )DEFAULT CHARSET utf8mb4;
 
-CREATE TABLE commande(
+CREATE TABLE IF NOT EXISTS commande(
    id_commande INT AUTO_INCREMENT,
    date_achat DATE,
    etat_id INT NOT NULL,
@@ -78,7 +78,7 @@ CREATE TABLE commande(
    FOREIGN KEY(utilisateur_id) REFERENCES utilisateur(id_utilisateur)
 )DEFAULT CHARSET utf8mb4;
 
-CREATE TABLE ligne_commande(
+CREATE TABLE IF NOT EXISTS ligne_commande(
    lunette_id INT,
    commande_id INT,
    prix DECIMAL(12,2),
@@ -88,7 +88,7 @@ CREATE TABLE ligne_commande(
    FOREIGN KEY(commande_id) REFERENCES commande(id_commande)
 )DEFAULT CHARSET utf8mb4;
 
-CREATE TABLE ligne_panier(
+CREATE TABLE IF NOT EXISTS ligne_panier(
    lunette_id INT,
    utilisateur_id INT,
    quantite INT,
