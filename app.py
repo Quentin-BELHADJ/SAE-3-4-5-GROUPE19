@@ -28,9 +28,6 @@ import os                                 # à ajouter
 from dotenv import load_dotenv            # à ajouter
 load_dotenv()
 
-
-
-
 @app.teardown_appcontext
 def teardown_db(exception):
     db = g.pop('db', None)
@@ -65,7 +62,7 @@ def before_request():
      #    if not request.path.startswith('/admin'):
      #        return redirect('/admin')
 
-
+#test
 
 app.register_blueprint(auth_security)
 app.register_blueprint(fixtures_load)
