@@ -18,37 +18,39 @@ def client_article_details():
     id_client = session['id_user']
 
     ## partie 4
-    # client_historique_add(id_article, id_client)
+    #client_historique_add(id_article, id_client)
 
-    sql = '''
+    sql = '''SELECT prix_lunette AS prix, CONCAT(libelle_lunette,'.jpg') AS image FROM lunette
+    WHERE id_lunette = %s
     '''
-    #mycursor.execute(sql, id_article)
-    #article = mycursor.fetchone()
-    article=[]
+    mycursor.execute(sql, id_article)
+    article = mycursor.fetchone()
     commandes_articles=[]
     nb_commentaires=[]
     if article is None:
         abort(404, "pb id article")
-    # sql = '''
-    #
-    # '''
-    # mycursor.execute(sql, ( id_article))
-    # commentaires = mycursor.fetchall()
-    # sql = '''
-    # '''
-    # mycursor.execute(sql, (id_client, id_article))
-    # commandes_articles = mycursor.fetchone()
-    # sql = '''
-    # '''
-    # mycursor.execute(sql, (id_client, id_article))
-    # note = mycursor.fetchone()
-    # print('note',note)
-    # if note:
-    #     note=note['note']
-    # sql = '''
-    # '''
-    # mycursor.execute(sql, (id_client, id_article))
-    # nb_commentaires = mycursor.fetchone()
+    sql = '''
+    
+    '''
+    """
+    mycursor.execute(sql, ( id_article))
+    commentaires = mycursor.fetchall()
+    sql = '''
+    '''
+    mycursor.execute(sql, (id_client, id_article))
+    commandes_articles = mycursor.fetchone()
+    sql = '''
+    '''
+    
+    mycursor.execute(sql, (id_client, id_article))
+    note = mycursor.fetchone()
+    print('note',note)
+    if note:
+    note=note['note']
+    sql = '''
+    '''
+    mycursor.execute(sql, (id_client, id_article))"""
+    nb_commentaires = mycursor.fetchone()
     return render_template('client/article_info/article_details.html'
                            , article=article
                            # , commentaires=commentaires
