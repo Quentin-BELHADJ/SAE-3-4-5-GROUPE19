@@ -14,8 +14,8 @@ def client_article_show():                                 # remplace client_ind
     mycursor = get_db().cursor()
     id_client = session['id_user']
 
-    sql = '''SELECT id_lunette AS id_article, libelle_lunette as nom, prix_lunette AS prix , CONCAT(libelle_lunette,'.jpg') AS image
-    FROM lunette ORDER BY libelle_lunette;'''
+    sql = '''SELECT id_lunette AS id_article, nom_lunette as nom, prix_lunette AS prix , CONCAT(nom_lunette,'.jpg') AS image
+    FROM lunette ORDER BY nom_lunette;'''
     mycursor.execute(sql)
     lunettes = mycursor.fetchall()
 
@@ -35,9 +35,9 @@ def client_article_show():                                 # remplace client_ind
 
     list_param = [id_client]
     articles_panier = []
-    sql = """SELECT lunette.libelle_lunette AS nom,quantite, prix_lunette AS prix FROM ligne_panier LEFT JOIN lunette ON ligne_panier.lunette_id = lunette.id_lunette WHERE ligne_panier.utilisateur_id = %s;"""
-    mycursor.execute(sql, list_param)
-    articles_panier = mycursor.fetchall()
+    #sql = """SELECT lunette.nom_lunette AS nom,prix_lunette AS prix FROM ligne_panier LEFT JOIN lunette ON ligne_panier.id_lunette = lunette.id_lunette WHERE ligne_panier.id_utilisateur = %s;"""
+    #mycursor.execute(sql, list_param)
+    #articles_panier = mycursor.fetchall()
 
     if len(articles_panier) >= 1:
         sql = ''' calcul du prix total du panier '''
