@@ -221,4 +221,3 @@ INSERT INTO lunette (nom_lunette,description, prix_lunette, id_categorie_lunette
 ('Lunettes de ski',"de belle lunette", 124.99, 1, 2, 1, 3),
 ('Lunettes de natation',"de belle lunette", 20.99, 1, 3, 2, 3),
 ('Lunettes sans branches',"de belle lunette", 199.99, 2, 4, 1, 3);
-
