@@ -185,7 +185,6 @@ INSERT INTO fournisseur (id_fournisseur, libelle_fournisseur) VALUES
 (2, 'Luxottica'),
 (3, 'Marchon'),
 (4, 'Safilo');
-
 INSERT INTO etat(id_etat, libelle_etat) VALUES (1,'en attente'),
                                                (2,'expédié'),
                                                (3,'validé'),
@@ -203,21 +202,21 @@ INSERT INTO utilisateur(id_utilisateur,login,email,password,role,nom) VALUES
     'ROLE_client','client2');
 
 INSERT INTO sexe (libelle) VALUES
-("H"),("F"),("HF");
+('H'),('F'),('HF');
 
 INSERT INTO lunette (nom_lunette,description, prix_lunette, id_categorie_lunette, id_marque, id_fournisseur,id_sexe) VALUES
-('Aviator',"de belle lunette", 200.00, 1, 1, 1, 3),
-('Round Metal',"de belle lunette", 150.00, 2, 2, 2,3),
-('Wayfarer',"de belle lunette", 180.00, 3, 1, 1,3),
-('Clubmaster',"de belle lunette", 250.00, 1, 3, 3,3),
-('Lunettes de sport',"de belle lunette", 300.00, 4, 4, 4, 3),
-('Lunettes de vue rondes',"de belle lunette", 120.00, 2, 2, 2, 3),
-('Lunettes pour enfant',"de belle lunette", 50.00, 4, 4, 2, 3),
-('Lunettes de mode',"de belle lunette", 250.00, 5, 5, 2, 3),
-('Lunettes de vue rectangulaires',"de belle lunette", 160.00, 1, 2, 1, 3),
-('Steampunk',"de belle lunette", 100.00, 1, 2, 3, 3),
-('Lunettes anti lumiere bleu',"de belle lunette", 90.00, 1, 2, 1, 3),
-('Lunettes triangle',"de belle lunette", 999.99, 1, 2, 1, 3),
-('Lunettes de ski',"de belle lunette", 124.99, 1, 2, 1, 3),
-('Lunettes de natation',"de belle lunette", 20.99, 1, 3, 2, 3),
-('Lunettes sans branches',"de belle lunette", 199.99, 2, 4, 1, 3);
+('Aviator','de belle lunette', 200.00, 1, 1, 1, 3),
+('Round Metal','de belle lunette', 150.00, 2, 2, 2,3),
+('Wayfarer','de belle lunette', 180.00, 3, 1, 1,3),
+('Clubmaster','de belle lunette', 250.00, 1, 3, 3,3),
+('Lunettes de sport','de belle lunette', 300.00, 4, 4, 4, 3),
+('Lunettes de vue rondes','de belle lunette', 120.00, 2, 2, 2, 3),
+('Lunettes pour enfant','de belle lunette', 50.00, 4, 4, 2, 3),
+('Lunettes de mode','de belle lunette', 250.00, 5, 5, 2, 3),
+('Lunettes de vue rectangulaires','de belle lunette', 160.00, 1, 2, 1, 3),
+('Steampunk','de belle lunette', 100.00, 1, 2, 3, 3),
+('Lunettes anti lumiere bleu','de belle lunette', 90.00, 1, 2, 1, 3),
+('Lunettes triangle','de belle lunette', 999.99, 1, 2, 1, 3),
+('Lunettes de ski','de belle lunette', 124.99, 1, 2, 1, 3),
+('Lunettes de natation','de belle lunette', 20.99, 1, 3, 2, 3),
+('Lunettes sans branches','de belle lunette', 199.99, 2, 4, 1, 3);
