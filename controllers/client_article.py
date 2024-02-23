@@ -44,9 +44,17 @@ def client_article_show():                                 # remplace client_ind
         prix_total = None
     else:
         prix_total = None
+
+    sql = """SELECT l.nom_lunette, d.stock
+FROM lunette l
+JOIN declinaison d on l.id_lunette = d.id_lunette;"""
+    mycursor.execute(sql)
+    stock_lunette = mycursor.fetchall()
+
     return render_template('client/boutique/panier_article.html'
                            , articles=articles
                            , articles_panier=articles_panier
                            #, prix_total=prix_total
                            , items_filtre=types_article
+                           , stock_lunette=stock_lunette
                            )

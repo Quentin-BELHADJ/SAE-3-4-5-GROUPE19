@@ -229,6 +229,6 @@ SELECT l.nom_lunette, d.stock
 FROM lunette l
 JOIN declinaison d on l.id_lunette = d.id_lunette;
 
-UPDATE declinaison
-SET stock = 0
-WHERE id_lunette = 1;
+#UPDATE declinaison
+#SET stock = 0
+#WHERE id_lunette = 1;
