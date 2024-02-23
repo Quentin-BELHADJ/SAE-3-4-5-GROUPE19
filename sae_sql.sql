@@ -226,11 +226,5 @@ INSERT INTO declinaison (stock, id_couleur, id_lunette)
 SELECT 5, 1, id_lunette
 FROM lunette;
 
-SELECT d.id_lunette AS id_article, nom_lunette as nom, prix_lunette AS prix , CONCAT(nom_lunette,'.jpg') AS image, d.stock as stock
-    FROM lunette l
-    JOIN declinaison d on l.id_lunette = d.id_lunette
-    ORDER BY nom_lunette;
-
-
 INSERT INTO ligne_panier VALUES
 (1,2,1);
