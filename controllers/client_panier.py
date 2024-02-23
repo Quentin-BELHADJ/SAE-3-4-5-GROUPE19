@@ -111,13 +111,40 @@ def client_panier_delete_line():
 
 @client_panier.route('/client/panier/filtre', methods=['POST'])
 def client_panier_filtre():
+    mycursor = get_db().cursor()
+    articles = []
+
     filter_word = request.form.get('filter_word', None)
     filter_prix_min = request.form.get('filter_prix_min', None)
     filter_prix_max = request.form.get('filter_prix_max', None)
     filter_types = request.form.getlist('filter_types', None)
+
+    session['filter_word'] = filter_word
+    session['filter_prix_min'] = filter_prix_min
+    session['filter_prix_max'] = filter_prix_max
+    session['filter_types'] = filter_types
+
+    sql = """
+    SELECT l.id_lunette as id_lunette, l.nom_lunette as nom, l.prix_lunette as prix, CONCAT(l.nom_lunette, '.jpg') as image, d.stock as stock
+    FROM lunette l 
+    JOIN declinaison d on l.id_lunette = d.id_lunette
+    """
+    mycursor.execute(sql)
+    articles = mycursor.fetchall()
+
+    if filter_word:
+        articles = [article for article in articles if filter_word.lower() in article.nom.lower()]
+    if filter_prix_min:
+        articles = [article for article in articles if article.prix >= float(filter_prix_min)]
+    if filter_prix_max:
+        articles = [article for article in articles if article.prix <= float(filter_prix_max)]
+    if filter_types:
+        articles = [article for article in articles if article.marque_id in filter_types]
+
+
     # test des variables puis
     # mise en session des variables
-    return redirect('/client/article/show')
+    return redirect('/client/article/show', articles=articles )
 
 
 @client_panier.route('/client/panier/filtre/suppr', methods=['POST'])
