@@ -116,6 +116,7 @@ CREATE TABLE ligne_commande(
 CREATE TABLE ligne_panier(
    id_declinaison INT,
    id_utilisateur INT,
+   quantite INT,
    PRIMARY KEY(id_declinaison, id_utilisateur),
    FOREIGN KEY(id_declinaison) REFERENCES declinaison(id_declinaison),
    FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur)
@@ -225,11 +226,13 @@ INSERT INTO declinaison (stock, id_couleur, id_lunette)
 SELECT 5, 1, id_lunette
 FROM lunette;
 
-SELECT l.nom_lunette, d.stock
-FROM lunette l
-JOIN declinaison d on l.id_lunette = d.id_lunette;
+#SELECT l.nom_lunette, d.stock
+#FROM lunette l
+#JOIN declinaison d on l.id_lunette = d.id_lunette;
 
 #UPDATE declinaison
 #SET stock = 0
 #WHERE id_lunette = 1;
 
+INSERT INTO ligne_panier VALUES
+(1,2,1);
