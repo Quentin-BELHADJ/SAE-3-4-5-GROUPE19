@@ -116,6 +116,7 @@ CREATE TABLE ligne_commande(
 CREATE TABLE ligne_panier(
    id_declinaison INT,
    id_utilisateur INT,
+   quantite INT,
    PRIMARY KEY(id_declinaison, id_utilisateur),
    FOREIGN KEY(id_declinaison) REFERENCES declinaison(id_declinaison),
    FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur)
@@ -231,4 +232,5 @@ SELECT d.id_lunette AS id_article, nom_lunette as nom, prix_lunette AS prix , CO
     ORDER BY nom_lunette;
 
 
-
+INSERT INTO ligne_panier VALUES
+(1,2,1);
