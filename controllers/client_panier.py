@@ -125,30 +125,39 @@ def client_panier_filtre():
     session['filter_types'] = filter_types
 
     sql = """
-    SELECT l.id_lunette as id_lunette, l.nom_lunette as nom, l.prix_lunette as prix, CONCAT(l.nom_lunette, '.jpg') as image, d.stock as stock
+    SELECT l.id_lunette as id_lunette, l.nom_lunette as nom, l.prix_lunette as prix, CONCAT(l.nom_lunette, '.jpg') as image, d.stock as stock, l.id_marque as marque_id
     FROM lunette l 
     JOIN declinaison d on l.id_lunette = d.id_lunette
     """
+
+    if filter_types:
+        sql += " WHERE l.id_marque IN ({})".format(','.join(map(str, filter_types)))
+
     mycursor.execute(sql)
+
     articles = mycursor.fetchall()
 
+
     if filter_word:
-        articles = [article for article in articles if filter_word.lower() in article.nom.lower()]
+        articles = [article for article in articles if filter_word.lower() in article['nom'].lower()]
     if filter_prix_min:
-        articles = [article for article in articles if article.prix >= float(filter_prix_min)]
+        articles = [article for article in articles if article['prix'] >= float(filter_prix_min)]
     if filter_prix_max:
-        articles = [article for article in articles if article.prix <= float(filter_prix_max)]
-    if filter_types:
-        articles = [article for article in articles if article.marque_id in filter_types]
+        articles = [article for article in articles if article['prix'] <= float(filter_prix_max)]
+
 
 
     # test des variables puis
     # mise en session des variables
-    return redirect('/client/article/show', articles=articles )
+    return render_template('/client/boutique/panier_article.html', articles=articles)
 
 
 @client_panier.route('/client/panier/filtre/suppr', methods=['POST'])
 def client_panier_filtre_suppr():
     # suppression  des variables en session
+    session['filter_word'] = None
+    session['filter_prix_min'] = None
+    session['filter_prix_max'] = None
+    session['filter_types'] = None
     print("suppr filtre")
     return redirect('/client/article/show')
