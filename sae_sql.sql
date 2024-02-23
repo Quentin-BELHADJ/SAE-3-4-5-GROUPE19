@@ -187,9 +187,7 @@ INSERT INTO fournisseur (id_fournisseur, libelle_fournisseur) VALUES
 (3, 'Marchon'),
 (4, 'Safilo');
 INSERT INTO etat(id_etat, libelle_etat) VALUES (1,'en attente'),
-                                               (2,'expédié'),
-                                               (3,'validé'),
-                                               (4,'confirmé');
+                                               (2,'expédié');
 
 INSERT INTO utilisateur(id_utilisateur,login,email,password,role,nom) VALUES
 (1,'admin','admin@admin.fr',
@@ -222,14 +220,17 @@ INSERT INTO lunette (nom_lunette,description, prix_lunette, id_categorie_lunette
 ('Lunettes de natation','de belle lunette', 20.99, 1, 3, 2, 3),
 ('Lunettes sans branches','de belle lunette', 199.99, 2, 4, 1, 3);
 
-INSERT INTO declinaison (stock, id_couleur, id_lunette)
-SELECT 5, 1, id_lunette
+INSERT INTO declinaison (stock, id_couleur,prix, id_lunette)
+SELECT 5, 1,100, id_lunette
 FROM lunette;
 
 INSERT INTO ligne_panier VALUES
-(1,2,1);
+(1,2,1),(2,2,3);
 
 SELECT l.id_lunette AS id_article, nom_lunette as nom, prix_lunette AS prix , CONCAT(nom_lunette,'.jpg') AS image, d.stock as stock
     FROM lunette l
     JOIN declinaison d on l.id_lunette = d.id_lunette
     ORDER BY nom_lunette;
+
+INSERT INTO adresse(nom,rue, code_postal,ville, id_utilisateur)
+VALUES ("NOM prénom", "1 rue de machin" ,"90000", "Belfort",2);

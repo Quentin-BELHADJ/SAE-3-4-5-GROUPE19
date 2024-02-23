@@ -6,7 +6,7 @@
         </div>
         <div class="row">
              <br>
-            <a href="/client/coordonnee/show" class="btn btn-secondary mt-5 col-2"> ajouter une adresse (livrable 2)</a>
+            <a href="/client/coordonnee/show" class="btn btn-secondary mt-5 col-2">Ajouter une adresse</a>
             <form action="/client/commande/add"  style="display: inline-block;"  method="post" >
             {% if adresses | length > 0 %}
                 <br>
@@ -32,7 +32,7 @@
                     <br>
 
                     <h4>Choisisser l'adresse de facturation</h4>
-                    adresse de facturation identique <input type="checkbox" name="adresse_identique" value="adresse_identique" id="adresse_identique" onclick="identique()">
+                    adresse de facturation identique <input type="checkbox" name="adresse_identique" value="adresse_identique" id="adresse_identique" onclick="identique()" >
                 <br>
                     <select  id="id_adresse_facturation" name="id_adresse_facturation" required class="form-select">
                         <option value="">Sélectionner l'adresse de livraison</option>
@@ -47,8 +47,8 @@
                         {% endfor %}
                     </select>
                 {%  else %}
-                    Il faut une adresse de livraison et de facturation pour valider la commande (livrable 2)
-                    <a href="/client/coordonnee/show"  class="btn btn-primary">Ajouter une adresse (livrable 2)</a>
+                    Il faut une adresse de livraison et de facturation pour valider la commande
+                    <a href="/client/coordonnee/show"  class="btn btn-primary">Ajouter une adresse </a>
                 {% endif %}
                 <br>
                 <button class="btn btn-primary mt-4" > Passer ma commande </button>

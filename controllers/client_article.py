@@ -37,9 +37,12 @@ def client_article_show():                                 # remplace client_ind
 
     list_param = [id_client]
     articles_panier = []
-    #sql = """SELECT lunette.nom_lunette AS nom,prix_lunette AS prix FROM ligne_panier LEFT JOIN lunette ON ligne_panier.id_lunette = lunette.id_lunette WHERE ligne_panier.id_utilisateur = %s;"""
-    #mycursor.execute(sql, list_param)
-    #articles_panier = mycursor.fetchall()
+    sql = """SELECT lunette.nom_lunette AS nom, declinaison.prix AS prix, ligne_panier.quantite AS quantite FROM ligne_panier 
+    LEFT JOIN declinaison ON declinaison.id_declinaison = ligne_panier.id_declinaison
+    LEFT JOIN lunette ON declinaison.id_lunette = lunette.id_lunette
+    WHERE ligne_panier.id_utilisateur = %s;"""
+    mycursor.execute(sql, list_param)
+    articles_panier = mycursor.fetchall()
 
     if len(articles_panier) >= 1:
         sql = ''' calcul du prix total du panier '''
