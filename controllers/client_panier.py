@@ -11,35 +11,45 @@ client_panier = Blueprint('client_panier', __name__,
 
 @client_panier.route('/client/panier/add', methods=['POST'])
 def client_panier_add():
-    mycursor = get_db().cursor()
-    id_client = session['id_user']
-    id_article = request.form.get('id_article')
-    quantite = request.form.get('quantite')
-    # ---------
-    #id_declinaison_article=request.form.get('id_declinaison_article',None)
-    id_declinaison_article = 1
+    id_declinaison = request.form.get('id_article')
+    id_utilisateur = request.form.get('id_utilisateur')
+    quantite = int(request.form.get('quantite'))
+    print(id_declinaison)
 
-# ajout dans le panier d'une déclinaison d'un article (si 1 declinaison : immédiat sinon => vu pour faire un choix
-    # sql = '''    '''
-    # mycursor.execute(sql, (id_article))
-    # declinaisons = mycursor.fetchall()
-    # if len(declinaisons) == 1:
-    #     id_declinaison_article = declinaisons[0]['id_declinaison_article']
-    # elif len(declinaisons) == 0:
-    #     abort("pb nb de declinaison")
-    # else:
-    #     sql = '''   '''
-    #     mycursor.execute(sql, (id_article))
-    #     article = mycursor.fetchone()
-    #     return render_template('client/boutique/declinaison_article.html'
-    #                                , declinaisons=declinaisons
-    #                                , quantite=quantite
-    #                                , article=article)
+    try:
+        # Récupérer le stock actuel de la déclinaison
+        mycursor = get_db().cursor()
+        mycursor.execute(f"SELECT stock FROM declinaison WHERE declinaison.id_lunette =%s;", (id_declinaison,))
+        result = mycursor.fetchone()
+        print(result)
+        if result:
+            stock_actuel = result['stock']
+            print(stock_actuel)
 
-# ajout dans le panier d'un article
+            # Vérifier si le stock est suffisant
+            if stock_actuel >= quantite:
+                # Mettre à jour le stock dans la table declinaison
+                nouveau_stock = stock_actuel - quantite
+                print('nouveau stock : ', nouveau_stock)
+                mycursor.execute(
+                    f"UPDATE declinaison SET stock = {nouveau_stock} WHERE declinaison.id_lunette = {id_declinaison}")
+                get_db().commit()
 
+                flash("L'article a été ajouté à votre panier avec succès.")
+                return redirect('/client/article/show')
+            else:
+                flash("Stock insuffisant.")
+                return redirect('/client/article/show')
+        else:
+            flash("La déclinaison spécifiée n'existe pas.")
+            return redirect('/client/article/show')
 
-    return redirect('/client/article/show')
+    except Exception as e:
+        flash(f"Une erreur s'est produite : {str(e)}")
+        return redirect('/client/article/show')
+
+    finally:
+        mycursor.close()
 
 @client_panier.route('/client/panier/delete', methods=['POST'])
 def client_panier_delete():
