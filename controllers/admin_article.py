@@ -17,7 +17,10 @@ admin_article = Blueprint('admin_article', __name__,
 @admin_article.route('/admin/article/show')
 def show_article():
     mycursor = get_db().cursor()
-    sql = '''  requête admin_article_1
+    sql = '''SELECT l.id_lunette AS id_article, nom_lunette as nom, prix_lunette AS prix , CONCAT(nom_lunette,'.jpg') AS image, d.stock as stock
+    FROM lunette l
+    JOIN declinaison d on l.id_lunette = d.id_lunette
+    ORDER BY nom_lunette;
     '''
     mycursor.execute(sql)
     articles = mycursor.fetchall()
@@ -100,13 +103,14 @@ def delete_article():
 @admin_article.route('/admin/article/edit', methods=['GET'])
 def edit_article():
     id_article=request.args.get('id_article')
+    print(id_article)
     mycursor = get_db().cursor()
     sql = '''
     requête admin_article_6    
     '''
     mycursor.execute(sql, id_article)
     article = mycursor.fetchone()
-    print(article)
+
     sql = '''
     requête admin_article_7
     '''

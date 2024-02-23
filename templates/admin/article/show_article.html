@@ -14,11 +14,11 @@ articles (tableau de dictionnaires)
 {% endblock %}
 
 {% block body %}
-<h3>article</h3>
+<h3>Les lunettes</h3>
 <a  class="btn btn-outline-success" href="/admin/article/add">ajouter un article</a>
 <br><br>
 {#{{ articles }}#}
-<table class="table">
+{# <table class="table">
     <thead class="thead-dark">
         <tr>
             <th>nom</th><th>id</th><th>type article (id)</th><th>prix</th><th style="color: green">stock</th>
@@ -32,7 +32,7 @@ articles (tableau de dictionnaires)
                   <td>{{ ligne.nom }}</td>
                   <td>{{ ligne.id_article }}</td>
                   <td><span style="color: red">{{ ligne.libelle }}</span> ({{ ligne.type_article_id }})</td>
-                  <td>{#{ ligne.prix }#}  {{  "{:,.2f} €".format(ligne.prix) }}</td>
+                  <td>{{ ligne.prix }}  {{  "{:,.2f} €".format(ligne.prix) }}</td>
                   <td>
                   {% if ligne.stock is defined %}
                      {% if ligne.stock != None  %}
@@ -63,7 +63,7 @@ articles (tableau de dictionnaires)
                   {% endif %}
                   </td>
 
-                 {# <td>{{ ligne.date_create }} {{ ligne.date_create.strftime('%d-%m-%Y') }} </td> #}
+
                   <td>
                       {% if ligne.nb_declinaisons is defined %}
                         {{ ligne.nb_declinaisons }}
@@ -93,5 +93,72 @@ articles (tableau de dictionnaires)
            </tr>
     {% endif %}
     </tbody>
-</table>
+</table> #}
+    <div class="row">
+                {% for article in articles  %}
+                        <div class="card col-4 mt-4 p-1">
+                            <div class="card-body border-dark rounded p-1">
+                                <a href="/client/article/details?id_article={{ article.id_article }}" >
+                                <h3 class="card-title">
+                                    <span style="color: #0b2e13">{{ article.nom }}</span><br>
+                                    {{ article.prix }}
+                                    €
+                                </h3>
+                                     {%  if article.image is not none %}
+                                        <img class="card-img-top rounded mx-auto d-block"  style="width:100px;height:100px"  src="{{ url_for('static', filename = 'images/')}}{{ article.image }}"  alt="image  de {{ article.nom }}" >
+                                    {% else %} <img class="card-img-top rounded mx-auto d-block"   style="width:100px;height:100px"   src="{{ url_for('static', filename='images/no_photo.jpeg')}}"  alt="image  de {{ article.nom }}" >
+                                    {% endif %}
+                                    <hr>
+                                </a>
+                                <div class="row">
+{# #}                                {% if  article.stock is defined and article.stock != None %}
+{# #}                                    {% if article.stock > 0 %}
+                                        <form action="admin/article/edit"  method="get" class="col-5">
+                                            <input type="hidden" name="id_article" value="{{ article.id_article }}">
+                                            <div class="input-group">
+                                            <button class="btn  btn-success"  id="button-addon1">
+                                                <i class="fas fa-shopping-cart">Gestion du stock</i>
+                                            </button>
+                                            </div>
+                                        </form>
+{# #}                                    {% endif %}
+{# #}                                {% endif %}
+                                     <div class="col-2 align-content-end">
+                                    {% if article.liste_envie is defined %}
+                                         {%if  article.liste_envie== 1%}
+                                             <a href="/client/envie/add?id_article={{ article.id_article }}" style="text-decoration: none">💛</a>
+                                         {% else %}
+                                             <a href="/client/envie/add?id_article={{ article.id_article }}" style="text-decoration: none">🤍</a>
+                                         {% endif %}
+                                    {% endif %}
+                                     </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                            {% if article.stock is defined and article.stock != None %}
+                                {% if article.stock > 0 %}
+                                    <small class="text-muted">Stock restant : {{ article.stock }}</small>
+                                {% else %}
+                                    <small class="text-muted">Article momentanément indisponible</small>
+                                {% endif %}
+                                <br>
+                            {% endif %}
+                            {% if article.nb_notes is defined %}
+                                {% if article.nb_notes > 0 %}
+                                 <a  href="/client/article/details?id_article={{ article.id_article }}" >
+                                    <span style="color: #3A7734"> note : {{  "{:,.1f}".format(article.moy_notes) }}({{ article.nb_notes }})</span>
+                                 </a>
+                                {% endif %}
+                            {% endif %}
+                            {% if article.nb_avis is defined %}
+                                {% if article.nb_avis > 0 %}
+                                 <a href="/client/article/details?id_article={{ article.id_article }}" >
+                                    <span style="color: #3A7734">({{ article.nb_avis }} avis)</span>
+                                 </a>
+                                {% endif %}
+                            {% endif %}
+                            </div>
+                        </div>
+                {% endfor %}
+    </div>
 {% endblock %}
