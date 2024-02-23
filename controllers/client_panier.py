@@ -134,8 +134,11 @@ def client_panier_filtre():
         sql += " WHERE l.id_marque IN ({})".format(','.join(map(str, filter_types)))
 
     mycursor.execute(sql)
-
     articles = mycursor.fetchall()
+
+    sql = '''SELECT id_marque AS id_type_article, libelle_marque AS libelle FROM marque ORDER BY libelle;'''
+    mycursor.execute(sql)
+    marques = mycursor.fetchall()
 
 
     if filter_word:
@@ -149,7 +152,9 @@ def client_panier_filtre():
 
     # test des variables puis
     # mise en session des variables
-    return render_template('/client/boutique/panier_article.html', articles=articles)
+    return render_template('/client/boutique/panier_article.html'
+                           , articles=articles
+                           , items_filtre=marques)
 
 
 @client_panier.route('/client/panier/filtre/suppr', methods=['POST'])
