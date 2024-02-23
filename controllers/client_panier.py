@@ -11,35 +11,45 @@ client_panier = Blueprint('client_panier', __name__,
 
 @client_panier.route('/client/panier/add', methods=['POST'])
 def client_panier_add():
-    mycursor = get_db().cursor()
-    id_client = session['id_user']
-    id_article = request.form.get('id_article')
-    quantite = request.form.get('quantite')
-    # ---------
-    #id_declinaison_article=request.form.get('id_declinaison_article',None)
-    id_declinaison_article = 1
+    id_declinaison = request.form.get('id_article')
+    id_utilisateur = request.form.get('id_utilisateur')
+    quantite = int(request.form.get('quantite'))
+    print(id_declinaison)
 
-# ajout dans le panier d'une déclinaison d'un article (si 1 declinaison : immédiat sinon => vu pour faire un choix
-    # sql = '''    '''
-    # mycursor.execute(sql, (id_article))
-    # declinaisons = mycursor.fetchall()
-    # if len(declinaisons) == 1:
-    #     id_declinaison_article = declinaisons[0]['id_declinaison_article']
-    # elif len(declinaisons) == 0:
-    #     abort("pb nb de declinaison")
-    # else:
-    #     sql = '''   '''
-    #     mycursor.execute(sql, (id_article))
-    #     article = mycursor.fetchone()
-    #     return render_template('client/boutique/declinaison_article.html'
-    #                                , declinaisons=declinaisons
-    #                                , quantite=quantite
-    #                                , article=article)
+    try:
+        # Récupérer le stock actuel de la déclinaison
+        mycursor = get_db().cursor()
+        mycursor.execute(f"SELECT stock FROM declinaison WHERE declinaison.id_lunette =%s;", (id_declinaison,))
+        result = mycursor.fetchone()
+        print(result)
+        if result:
+            stock_actuel = result['stock']
+            print(stock_actuel)
 
-# ajout dans le panier d'un article
+            # Vérifier si le stock est suffisant
+            if stock_actuel >= quantite:
+                # Mettre à jour le stock dans la table declinaison
+                nouveau_stock = stock_actuel - quantite
+                print('nouveau stock : ', nouveau_stock)
+                mycursor.execute(
+                    f"UPDATE declinaison SET stock = {nouveau_stock} WHERE declinaison.id_lunette = {id_declinaison}")
+                get_db().commit()
 
+                flash("L'article a été ajouté à votre panier avec succès.")
+                return redirect('/client/article/show')
+            else:
+                flash("Stock insuffisant.")
+                return redirect('/client/article/show')
+        else:
+            flash("La déclinaison spécifiée n'existe pas.")
+            return redirect('/client/article/show')
 
-    return redirect('/client/article/show')
+    except Exception as e:
+        flash(f"Une erreur s'est produite : {str(e)}")
+        return redirect('/client/article/show')
+
+    finally:
+        mycursor.close()
 
 @client_panier.route('/client/panier/delete', methods=['POST'])
 def client_panier_delete():
@@ -101,17 +111,58 @@ def client_panier_delete_line():
 
 @client_panier.route('/client/panier/filtre', methods=['POST'])
 def client_panier_filtre():
+    mycursor = get_db().cursor()
+    articles = []
+
     filter_word = request.form.get('filter_word', None)
     filter_prix_min = request.form.get('filter_prix_min', None)
     filter_prix_max = request.form.get('filter_prix_max', None)
     filter_types = request.form.getlist('filter_types', None)
+
+    session['filter_word'] = filter_word
+    session['filter_prix_min'] = filter_prix_min
+    session['filter_prix_max'] = filter_prix_max
+    session['filter_types'] = filter_types
+
+    sql = """
+    SELECT l.id_lunette as id_lunette, l.nom_lunette as nom, l.prix_lunette as prix, CONCAT(l.nom_lunette, '.jpg') as image, d.stock as stock, l.id_marque as marque_id
+    FROM lunette l 
+    JOIN declinaison d on l.id_lunette = d.id_lunette
+    """
+
+    if filter_types:
+        sql += " WHERE l.id_marque IN ({})".format(','.join(map(str, filter_types)))
+
+    mycursor.execute(sql)
+    articles = mycursor.fetchall()
+
+    sql = '''SELECT id_marque AS id_type_article, libelle_marque AS libelle FROM marque ORDER BY libelle;'''
+    mycursor.execute(sql)
+    marques = mycursor.fetchall()
+
+
+    if filter_word:
+        articles = [article for article in articles if filter_word.lower() in article['nom'].lower()]
+    if filter_prix_min:
+        articles = [article for article in articles if article['prix'] >= float(filter_prix_min)]
+    if filter_prix_max:
+        articles = [article for article in articles if article['prix'] <= float(filter_prix_max)]
+
+
+
     # test des variables puis
     # mise en session des variables
-    return redirect('/client/article/show')
+    return render_template('/client/boutique/panier_article.html'
+                           , articles=articles
+                           , items_filtre=marques)
 
 
 @client_panier.route('/client/panier/filtre/suppr', methods=['POST'])
 def client_panier_filtre_suppr():
     # suppression  des variables en session
+    session['filter_word'] = None
+    session['filter_prix_min'] = None
+    session['filter_prix_max'] = None
+    session['filter_types'] = None
     print("suppr filtre")
     return redirect('/client/article/show')
