@@ -227,10 +227,5 @@ FROM lunette;
 INSERT INTO ligne_panier VALUES
 (1,2,1),(2,2,3);
 
-SELECT l.id_lunette AS id_article, nom_lunette as nom, prix_lunette AS prix , CONCAT(nom_lunette,'.jpg') AS image, d.stock as stock
-    FROM lunette l
-    JOIN declinaison d on l.id_lunette = d.id_lunette
-    ORDER BY nom_lunette;
-
 INSERT INTO adresse(nom,rue, code_postal,ville, id_utilisateur)
 VALUES ("NOM prénom", "1 rue de machin" ,"90000", "Belfort",2);

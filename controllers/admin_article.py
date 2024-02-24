@@ -105,9 +105,10 @@ def edit_article():
     if request.method == 'GET':
         id_article = request.args.get('id_article')
         mycursor = get_db().cursor()
-        sql = '''SELECT * FROM lunette WHERE id_lunette = %s'''
+        sql = '''SELECT l.nom_lunette as nom, CONCAT(l.nom_lunette, '.jpg') as image, l.id_lunette as id_lunette, l.prix_lunette as prix, d.stock FROM lunette l JOIN declinaison d on l.id_lunette = d.id_lunette WHERE l.id_lunette =%s'''
         mycursor.execute(sql, (id_article,))
         article = mycursor.fetchone()
+
 
         if article:
             return render_template('admin/article/edit_article.html', article=article)

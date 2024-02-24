@@ -11,14 +11,15 @@ client_panier = Blueprint('client_panier', __name__,
 
 @client_panier.route('/client/panier/add', methods=['POST'])
 def client_panier_add():
+    mycursor = get_db().cursor()
     id_declinaison = request.form.get('id_article')
     id_utilisateur = request.form.get('id_utilisateur')
     quantite = int(request.form.get('quantite'))
     print(id_declinaison)
+    print(id_utilisateur)
+    print(quantite)
 
     try:
-        # Récupérer le stock actuel de la déclinaison
-        mycursor = get_db().cursor()
         mycursor.execute(f"SELECT stock FROM declinaison WHERE declinaison.id_lunette =%s;", (id_declinaison,))
         result = mycursor.fetchone()
         print(result)

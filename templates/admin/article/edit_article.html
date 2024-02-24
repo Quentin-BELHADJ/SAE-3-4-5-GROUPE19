@@ -17,14 +17,33 @@ types_article : tableau de dictionnaires
 {% endblock %}
 
 {% block body %}
-    <h2>modifier un article</h2>
-        <div class="row mt-5">
-                <form action="/admin/article/edit" method="POST">
-                    <input type="hidden" name="id_article" value="{{ article.id_lunette }}">
-                    <label for="stock">Nouveau stock:</label>
-                    <input type="text" id="stock" name="new_stock" value="{{ article.stock }}"><br><br>
+    <div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h2>Modifier le stock d'un article</h2>
+            <form action="/admin/article/edit" method="POST">
+                    <h3 class="card-title">
+                    <span style="color: #0b2e13">{{ article.nom }}</span><br>
+                    {{ article.prix }}
+                    €
+                    </h3>
+                    {%  if article.image is not none %}
+                        <img class="card-img-top rounded mx-auto d-block"  style="width:100px;height:100px"  src="{{ url_for('static', filename = 'images/')}}{{ article.image }}"  alt="image  de {{ article.nom }}" >
+                    {% else %} <img class="card-img-top rounded mx-auto d-block"   style="width:100px;height:100px"   src="{{ url_for('static', filename='images/no_photo.jpeg')}}"  alt="image  de {{ article.nom }}" >
+                    {% endif %}
+                    <hr>
 
-                    <button type="submit">Modifier stock</button>
-                </form>
+                <input type="hidden" name="id_article" value="{{ article.id_lunette }}">
+                <div class="form-group">
+                    <label for="stock">Nouveau stock:</label>
+                    <input type="number" class="form-control" id="stock" name="new_stock" value="{{ article.stock }}">
+                    <br><p>Stock actuel : {{ article.stock }}</p>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Modifier stock</button>
+            </form>
         </div>
+    </div>
+</div>
+
 {% endblock %}
