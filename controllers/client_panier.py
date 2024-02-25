@@ -20,7 +20,7 @@ def client_panier_add():
     print("quantite ",quantite)
 
     try:
-        mycursor.execute(f"SELECT stock FROM declinaison WHERE declinaison.id_lunette =%s;", (id_declinaison,))
+        mycursor.execute("SELECT stock FROM declinaison WHERE declinaison.id_lunette =%s;", (id_declinaison,))
         result = mycursor.fetchone()
         print("result ",result)
 
@@ -31,16 +31,15 @@ def client_panier_add():
             # Vérifier si le stock est suffisant
             if stock_actuel >= quantite:
                 # Mettre à jour le stock dans la table declinaison
-                mycursor.execute(f"SELECT ligne_panier.id_utilisateur FROM ligne_panier WHERE id_utilisateur = {id_utilisateur} AND id_declinaison = {id_declinaison};")
+                mycursor.execute("SELECT ligne_panier.id_utilisateur FROM ligne_panier WHERE id_utilisateur = %s AND id_declinaison = %s;",[id_utilisateur,id_declinaison])
                 panier_utilisateur = mycursor.fetchone()
                 if panier_utilisateur == None:
-                    mycursor.execute(f"INSERT INTO ligne_panier (id_declinaison, id_utilisateur, quantite) SELECT l.id_lunette, {id_utilisateur}, {quantite} FROM lunette l WHERE l.id_lunette = {id_declinaison};")
+                    mycursor.execute("INSERT INTO ligne_panier (id_declinaison, id_utilisateur, quantite) SELECT l.id_lunette, %s, %s FROM lunette l WHERE l.id_lunette = %s;",[id_utilisateur,quantite,id_declinaison])
                 else :
-                    mycursor.execute(f"UPDATE ligne_panier SET quantite = quantite + {quantite} WHERE id_utilisateur = {id_utilisateur} AND id_declinaison = {id_declinaison};")
+                    mycursor.execute("UPDATE ligne_panier SET quantite = quantite + %s WHERE id_utilisateur = %s AND id_declinaison = %s;",[quantite,id_utilisateur,id_declinaison])
                 nouveau_stock = stock_actuel - quantite
                 print('nouveau stock : ', nouveau_stock)
-                mycursor.execute(
-                    f"UPDATE declinaison SET stock = {nouveau_stock} WHERE declinaison.id_lunette = {id_declinaison}")
+                mycursor.execute("UPDATE declinaison SET stock = %s WHERE declinaison.id_lunette = %s",[nouveau_stock,id_declinaison])
                 get_db().commit()
 
                 flash("L'article a été ajouté à votre panier avec succès.")
