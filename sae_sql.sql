@@ -224,8 +224,5 @@ INSERT INTO declinaison (stock, id_couleur,prix, id_lunette)
 SELECT 5, 1,100, id_lunette
 FROM lunette;
 
-INSERT INTO ligne_panier VALUES
-(1,2,1),(2,2,3);
-
 INSERT INTO adresse(nom,rue, code_postal,ville, id_utilisateur)
 VALUES ("NOM prénom", "1 rue de machin" ,"90000", "Belfort",2);
