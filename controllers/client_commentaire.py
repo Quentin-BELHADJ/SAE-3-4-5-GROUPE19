@@ -20,8 +20,10 @@ def client_article_details():
     ## partie 4
     #client_historique_add(id_article, id_client)
 
-    sql = '''SELECT prix_lunette AS prix, CONCAT(libelle_lunette,'.jpg') AS image FROM lunette
-    WHERE id_lunette = %s
+    sql = '''SELECT l.prix_lunette AS prix, CONCAT(l.nom_lunette,'.jpg') AS image, SUM(d.stock)  AS stock, l.description AS description, l.nom_lunette AS nom FROM lunette l
+    LEFT JOIN declinaison d ON d.id_lunette = l.id_lunette
+    WHERE l.id_lunette = %s
+    GROUP BY l.id_lunette
     '''
     mycursor.execute(sql, id_article)
     article = mycursor.fetchone()
@@ -35,10 +37,15 @@ def client_article_details():
     """
     mycursor.execute(sql, ( id_article))
     commentaires = mycursor.fetchall()
-    sql = '''
+    """
+    sql = '''SELECT IFNULL(SUM(lc.quantite),0) AS nb_commandes_article FROM ligne_commande lc
+    LEFT JOIN commande c ON c.id_commande = lc.id_commande
+    LEFT JOIN declinaison d ON d.id_declinaison = lc.id_declinaison
+    WHERE c.id_utilisateur = %s AND d.id_lunette = %s;
     '''
     mycursor.execute(sql, (id_client, id_article))
     commandes_articles = mycursor.fetchone()
+    """
     sql = '''
     '''
     
