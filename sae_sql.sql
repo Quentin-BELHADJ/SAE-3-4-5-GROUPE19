@@ -221,8 +221,10 @@ INSERT INTO lunette (nom_lunette,description, prix_lunette, id_categorie_lunette
 ('Lunettes sans branches','de belle lunette', 199.99, 2, 4, 1, 3);
 
 INSERT INTO declinaison (stock, id_couleur,prix, id_lunette)
-SELECT 5, 1,100, id_lunette
-FROM lunette;
+SELECT 5, 1,prix_lunette, id_lunette
+FROM lunette ORDER BY id_lunette;
 
 INSERT INTO adresse(nom,rue, code_postal,ville, id_utilisateur)
 VALUES ("NOM prénom", "1 rue de machin" ,"90000", "Belfort",2);
+
+INSERT INTO ligne_panier VALUES (1,2,1),(2,2,2);
