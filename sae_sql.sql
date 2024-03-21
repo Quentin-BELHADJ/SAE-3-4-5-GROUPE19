@@ -154,7 +154,7 @@ CREATE TABLE commentaire(
 CREATE TABLE liste_envie(
    id_lunette INT,
    id_utilisateur INT,
-   date_update DATE,
+   date_update DATETIME,
    PRIMARY KEY(id_lunette, id_utilisateur, date_update),
    FOREIGN KEY(id_lunette) REFERENCES lunette(id_lunette),
    FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur)

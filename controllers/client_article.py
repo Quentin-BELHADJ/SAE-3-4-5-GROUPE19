@@ -15,10 +15,11 @@ def client_article_show():                                 # remplace client_ind
     id_client = session['id_user']
 
     sql = '''SELECT l.id_lunette AS id_article, nom_lunette as nom, prix_lunette AS prix , CONCAT(nom_lunette,'.jpg') AS image, d.stock as stock
+    ,IF(EXISTS(SELECT * FROM liste_envie le WHERE le.id_lunette = l.id_lunette AND le.id_utilisateur = %s),1,0) AS liste_envie
     FROM lunette l
     JOIN declinaison d on l.id_lunette = d.id_lunette
     ORDER BY nom_lunette;'''
-    mycursor.execute(sql)
+    mycursor.execute(sql, id_client)
     lunettes = mycursor.fetchall()
 
     sql = '''SELECT id_marque AS id_type_article, libelle_marque AS libelle FROM marque ORDER BY libelle;'''
