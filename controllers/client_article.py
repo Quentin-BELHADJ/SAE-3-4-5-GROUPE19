@@ -14,8 +14,10 @@ def client_article_show():                                 # remplace client_ind
     mycursor = get_db().cursor()
     id_client = session['id_user']
 
-    sql = '''SELECT id_lunette AS id_article, nom_lunette as nom, prix_lunette AS prix , CONCAT(nom_lunette,'.jpg') AS image
-    FROM lunette ORDER BY nom_lunette;'''
+    sql = '''SELECT l.id_lunette AS id_article, nom_lunette as nom, prix_lunette AS prix , CONCAT(nom_lunette,'.jpg') AS image, d.stock as stock
+    FROM lunette l
+    JOIN declinaison d on l.id_lunette = d.id_lunette
+    ORDER BY nom_lunette;'''
     mycursor.execute(sql)
     lunettes = mycursor.fetchall()
 
@@ -35,21 +37,35 @@ def client_article_show():                                 # remplace client_ind
 
     list_param = [id_client]
     articles_panier = []
-    sql = """SELECT lunette.nom_lunette AS nom, declinaison.prix AS prix, ligne_panier.quantite AS quantite FROM ligne_panier 
-    LEFT JOIN declinaison ON declinaison.id_declinaison = ligne_panier.id_declinaison
-    LEFT JOIN lunette ON declinaison.id_lunette = lunette.id_lunette
-    WHERE ligne_panier.id_utilisateur = %s;"""
+    sql = """SELECT 
+                 lunette.id_lunette AS id_article,
+                 lunette.nom_lunette AS nom,
+                 lunette.prix_lunette AS prix,
+                 ligne_panier.quantite AS quantite,
+                 ligne_panier.id_declinaison AS id_declinaison
+             FROM 
+                 ligne_panier
+             LEFT JOIN 
+                 declinaison ON declinaison.id_declinaison = ligne_panier.id_declinaison
+             LEFT JOIN 
+                 lunette ON declinaison.id_lunette = lunette.id_lunette
+             WHERE 
+                 ligne_panier.id_utilisateur = %s;"""
+
     mycursor.execute(sql, list_param)
     articles_panier = mycursor.fetchall()
 
     if len(articles_panier) >= 1:
-        sql = ''' calcul du prix total du panier '''
-        prix_total = None
+        sql = ''' SELECT SUM(d.prix*lp.quantite) AS prix FROM ligne_panier lp
+                   LEFT JOIN declinaison d ON d.id_declinaison = lp.id_declinaison WHERE lp.id_utilisateur = %s '''
+        mycursor.execute(sql,id_client)
+        prix_total = mycursor.fetchone()["prix"]
     else:
         prix_total = None
+
     return render_template('client/boutique/panier_article.html'
                            , articles=articles
                            , articles_panier=articles_panier
-                           #, prix_total=prix_total
+                           , prix_total=prix_total
                            , items_filtre=types_article
                            )

@@ -17,7 +17,10 @@ admin_article = Blueprint('admin_article', __name__,
 @admin_article.route('/admin/article/show')
 def show_article():
     mycursor = get_db().cursor()
-    sql = '''  requête admin_article_1
+    sql = '''SELECT l.id_lunette AS id_article, nom_lunette as nom, prix_lunette AS prix , CONCAT(nom_lunette,'.jpg') AS image, d.stock as stock
+    FROM lunette l
+    JOIN declinaison d on l.id_lunette = d.id_lunette
+    ORDER BY nom_lunette;
     '''
     mycursor.execute(sql)
     articles = mycursor.fetchall()
@@ -97,69 +100,32 @@ def delete_article():
     return redirect('/admin/article/show')
 
 
-@admin_article.route('/admin/article/edit', methods=['GET'])
+@admin_article.route('/admin/article/edit', methods=['GET', 'POST'])
 def edit_article():
-    id_article=request.args.get('id_article')
-    mycursor = get_db().cursor()
-    sql = '''
-    requête admin_article_6    
-    '''
-    mycursor.execute(sql, id_article)
-    article = mycursor.fetchone()
-    print(article)
-    sql = '''
-    requête admin_article_7
-    '''
-    mycursor.execute(sql)
-    types_article = mycursor.fetchall()
-
-    # sql = '''
-    # requête admin_article_6
-    # '''
-    # mycursor.execute(sql, id_article)
-    # declinaisons_article = mycursor.fetchall()
-
-    return render_template('admin/article/edit_article.html'
-                           ,article=article
-                           ,types_article=types_article
-                         #  ,declinaisons_article=declinaisons_article
-                           )
+    if request.method == 'GET':
+        id_article = request.args.get('id_article')
+        mycursor = get_db().cursor()
+        sql = '''SELECT l.nom_lunette as nom, CONCAT(l.nom_lunette, '.jpg') as image, l.id_lunette as id_lunette, l.prix_lunette as prix, d.stock FROM lunette l JOIN declinaison d on l.id_lunette = d.id_lunette WHERE l.id_lunette =%s'''
+        mycursor.execute(sql, (id_article,))
+        article = mycursor.fetchone()
 
 
-@admin_article.route('/admin/article/edit', methods=['POST'])
-def valid_edit_article():
-    mycursor = get_db().cursor()
-    nom = request.form.get('nom')
-    id_article = request.form.get('id_article')
-    image = request.files.get('image', '')
-    type_article_id = request.form.get('type_article_id', '')
-    prix = request.form.get('prix', '')
-    description = request.form.get('description')
-    sql = '''
-       requête admin_article_8
-       '''
-    mycursor.execute(sql, id_article)
-    image_nom = mycursor.fetchone()
-    image_nom = image_nom['image']
-    if image:
-        if image_nom != "" and image_nom is not None and os.path.exists(
-                os.path.join(os.getcwd() + "/static/images/", image_nom)):
-            os.remove(os.path.join(os.getcwd() + "/static/images/", image_nom))
-        # filename = secure_filename(image.filename)
-        if image:
-            filename = 'img_upload_' + str(int(2147483647 * random())) + '.png'
-            image.save(os.path.join('static/images/', filename))
-            image_nom = filename
+        if article:
+            return render_template('admin/article/edit_article.html', article=article)
+        else:
+            flash('L\'article sélectionné n\'existe pas', 'alert-danger')
+            return redirect('/admin/article/show')
+    elif request.method == 'POST':
+        id_article = request.form.get('id_article')
+        new_stock = request.form.get('new_stock')
 
-    sql = '''  requête admin_article_9 '''
-    mycursor.execute(sql, (nom, image_nom, prix, type_article_id, description, id_article))
+        mycursor = get_db().cursor()
+        sql = '''UPDATE declinaison SET stock = %s WHERE id_lunette = %s'''
+        mycursor.execute(sql, (new_stock, id_article))
+        get_db().commit()
 
-    get_db().commit()
-    if image_nom is None:
-        image_nom = ''
-    message = u'article modifié , nom:' + nom + '- type_article :' + type_article_id + ' - prix:' + prix  + ' - image:' + image_nom + ' - description: ' + description
-    flash(message, 'alert-success')
-    return redirect('/admin/article/show')
+        flash('Stock mis à jour avec succès', 'alert-success')
+        return redirect('/admin/article/show')
 
 
 

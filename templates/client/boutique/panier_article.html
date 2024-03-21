@@ -44,7 +44,7 @@
                                             <button class="btn  btn-success"  id="button-addon1">
                                                 <i class="fas fa-shopping-cart">Ajouter</i>
                                             </button>
-                                            <input type="number" id="input-{{ article.id_article }}" step="1" min="0" max="{{ article.stock }}" class="form-control" value="1" name="quantite"  aria-describedby="button-addon1">
+                                            <input type="number" id="input-{{ article.id_article }}" step="1" min="1" max="{{ article.stock }}" class="form-control" value="1" name="quantite"  aria-describedby="button-addon1">
                                             </div>
                                         </form>
 {# #}                                    {% endif %}
@@ -62,13 +62,10 @@
                             </div>
                             <div class="card-footer">
                             {% if article.stock is defined and article.stock != None %}
-                                 {% if article.stock > 0 %}
+                                {% if article.stock > 0 %}
                                     <small class="text-muted">Stock restant : {{ article.stock }}</small>
-                                 {% else %}
-                                    <small class="text-muted">article  momentanément indisponible</small>
-                                 {% endif %}
-                                {% if article.nb_declinaison is defined and article.nb_declinaison != None %}
-                                    ({{ article.nb_declinaison }} d.)
+                                {% else %}
+                                    <small class="text-muted">Article momentanément indisponible</small>
                                 {% endif %}
                                 <br>
                             {% endif %}
