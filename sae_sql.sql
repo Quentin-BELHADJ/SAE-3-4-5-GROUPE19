@@ -116,6 +116,7 @@ CREATE TABLE ligne_commande(
 CREATE TABLE ligne_panier(
    id_declinaison INT,
    id_utilisateur INT,
+   quantite INT,
    PRIMARY KEY(id_declinaison, id_utilisateur),
    FOREIGN KEY(id_declinaison) REFERENCES declinaison(id_declinaison),
    FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur)
@@ -220,3 +221,9 @@ INSERT INTO lunette (nom_lunette,description, prix_lunette, id_categorie_lunette
 ('Lunettes de ski','de belle lunette', 124.99, 1, 2, 1, 3),
 ('Lunettes de natation','de belle lunette', 20.99, 1, 3, 2, 3),
 ('Lunettes sans branches','de belle lunette', 199.99, 2, 4, 1, 3);
+
+INSERT INTO declinaison(stock,prix,image,id_couleur,id_lunette) VALUES
+(10,10,"",1,1);
+
+INSERT INTO ligne_panier VALUES
+(1,2,1);

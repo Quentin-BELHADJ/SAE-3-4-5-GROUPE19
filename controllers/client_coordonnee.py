@@ -13,11 +13,18 @@ client_coordonnee = Blueprint('client_coordonnee', __name__,
 def client_coordonnee_show():
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    utilisateur=[]
+    sql = "SELECT * FROM utilisateur WHERE id_utilisateur = %s"
+    mycursor.execute(sql, id_client)
+    utilisateur = mycursor.fetchone()
+    sql = """SELECT nom, rue,code_postal,ville FROM adresse WHERE id_utilisateur = %s"""
+    mycursor.execute(sql,id_client)
+    adresses = mycursor.fetchall()
+    print(adresses)
+    nb_adresses = len(adresses)
     return render_template('client/coordonnee/show_coordonnee.html'
                            , utilisateur=utilisateur
-                         #  , adresses=adresses
-                         #  , nb_adresses=nb_adresses
+                           , adresses=adresses
+                           , nb_adresses=nb_adresses
                            )
 
 @client_coordonnee.route('/client/coordonnee/edit', methods=['GET'])
@@ -61,9 +68,11 @@ def client_coordonnee_delete_adresse():
 def client_coordonnee_add_adresse():
     mycursor = get_db().cursor()
     id_client = session['id_user']
-
+    sql = "SELECT * FROM utilisateur WHERE id_utilisateur = %s"
+    mycursor.execute(sql, id_client)
+    utilisateur = mycursor.fetchone()
     return render_template('client/coordonnee/add_adresse.html'
-                           #,utilisateur=utilisateur
+                           ,utilisateur=utilisateur
                            )
 
 @client_coordonnee.route('/client/coordonnee/add_adresse',methods=['POST'])
@@ -74,6 +83,12 @@ def client_coordonnee_add_adresse_valide():
     rue = request.form.get('rue')
     code_postal = request.form.get('code_postal')
     ville = request.form.get('ville')
+
+    print(nom,rue,code_postal,ville,id_client)
+    sql = "INSERT INTO adresse (nom,rue,code_postal,ville,id_utilisateur) VALUES (%s,%s,%s,%s,%s);"
+    mycursor.execute(sql, [nom,rue,code_postal,ville,id_client])
+    get_db().commit()
+
     return redirect('/client/coordonnee/show')
 
 @client_coordonnee.route('/client/coordonnee/edit_adresse')
