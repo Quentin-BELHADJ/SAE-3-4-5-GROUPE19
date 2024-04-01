@@ -54,10 +54,9 @@ def client_panier_add():
                 sql = """UPDATE declinaison SET stock = %s WHERE declinaison.id_declinaison = %s"""
                 mycursor.execute(sql, [nouveau_stock, id_article])
                 print(result)
-
                 get_db().commit()
-
                 flash("L'article a été ajouté à votre panier avec succès.")
+                
                 return redirect('/client/article/show')
             else :
                 sql = """UPDATE ligne_panier SET quantite = quantite + %s WHERE id_utilisateur = %s AND id_declinaison = %s;"""

@@ -18,7 +18,7 @@ def client_article_details():
     id_client = session['id_user']
 
     ## partie 4
-    #client_historique_add(id_article, id_client)
+    
 
     sql = '''SELECT l.prix_lunette AS prix, CONCAT(l.nom_lunette,'.jpg') AS image, SUM(d.stock)  AS stock, l.description AS description, l.nom_lunette AS nom FROM lunette l
     LEFT JOIN declinaison d ON d.id_lunette = l.id_lunette
@@ -31,6 +31,9 @@ def client_article_details():
     nb_commentaires=[]
     if article is None:
         abort(404, "pb id article")
+    
+    client_historique_add(id_article, id_client)
+    
     sql = '''
     
     '''
@@ -58,6 +61,11 @@ def client_article_details():
     '''
     mycursor.execute(sql, (id_client, id_article))"""
     nb_commentaires = mycursor.fetchone()
+    
+    sql = "UPDATE lunette SET nb_consultation = nb_consultation+1 WHERE id_lunette=%s"
+    mycursor.execute(sql, id_article)
+    get_db().commit()
+    
     return render_template('client/article_info/article_details.html'
                            , article=article
                            # , commentaires=commentaires

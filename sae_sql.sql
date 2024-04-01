@@ -70,6 +70,7 @@ CREATE TABLE lunette(
    id_fournisseur INT NOT NULL,
    id_marque INT NOT NULL,
    id_sexe INT NOT NULL,
+   nb_consultation INT DEFAULT 0,
    PRIMARY KEY(id_lunette),
    FOREIGN KEY(id_categorie_lunette) REFERENCES categorie_lunette(id_categorie_lunette),
    FOREIGN KEY(id_fournisseur) REFERENCES fournisseur(id_fournisseur),
@@ -134,7 +135,7 @@ CREATE TABLE note(
 CREATE TABLE historique(
    id_lunette INT,
    id_utilisateur INT,
-   date_consultation VARCHAR(50),
+   date_consultation DATETIME,
    PRIMARY KEY(id_lunette, id_utilisateur, date_consultation),
    FOREIGN KEY(id_lunette) REFERENCES lunette(id_lunette),
    FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur)
@@ -154,7 +155,7 @@ CREATE TABLE commentaire(
 CREATE TABLE liste_envie(
    id_lunette INT,
    id_utilisateur INT,
-   date_update DATE,
+   date_update DATETIME,
    PRIMARY KEY(id_lunette, id_utilisateur, date_update),
    FOREIGN KEY(id_lunette) REFERENCES lunette(id_lunette),
    FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur)
