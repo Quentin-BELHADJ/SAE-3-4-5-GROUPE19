@@ -12,21 +12,28 @@ client_article = Blueprint('client_article', __name__,
 def client_article_show():                                 # remplace client_index
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    sql = '''
+    sql =  '''
     SELECT
     l.id_lunette AS id_article,
-    nom_lunette AS nom,
-    prix_lunette AS prix,
-    CONCAT(nom_lunette,'.jpg') AS image,
-    SUM(d.stock) AS stock,
+    l.nom_lunette AS nom,
+    l.prix_lunette AS prix,
+    CONCAT(nom_lunette, '.jpg') AS image,
+    (SELECT SUM(stock) FROM declinaison WHERE id_lunette = l.id_lunette) AS stock,
     COUNT(d.id_couleur) AS nb_declinaisons,
-    GROUP_CONCAT(d.id_declinaison) AS id_declinaison -- Concatenate the IDs of declinaisons for each lunette
+    COUNT(DISTINCT c.date_publication) AS nb_avis,
+    COUNT(DISTINCT n.id_utilisateur) AS nb_notes,
+    IFNULL(AVG(n.note), 0) AS moy_notes,
+    GROUP_CONCAT(d.id_declinaison) AS id_declinaison
 FROM
     lunette l
 JOIN
     declinaison d ON l.id_lunette = d.id_lunette
+LEFT JOIN
+    commentaire c ON l.id_lunette = c.id_lunette
+LEFT JOIN
+    note n ON l.id_lunette = n.id_lunette
 GROUP BY
-    l.id_lunette, l.nom_lunette, l.prix_lunette, CONCAT(nom_lunette,'.jpg') -- Group by lunette details
+    l.id_lunette, l.nom_lunette, l.prix_lunette, CONCAT(nom_lunette, '.jpg')
 ORDER BY
     nom_lunette;
     '''

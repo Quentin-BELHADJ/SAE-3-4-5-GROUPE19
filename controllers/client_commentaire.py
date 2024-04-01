@@ -20,12 +20,14 @@ def client_article_details():
     ## partie 4
 
 
-    sql = '''SELECT l.prix_lunette AS prix, l.id_lunette AS id_article, CONCAT(l.nom_lunette, '.jpg') AS image, SUM(d.stock) AS stock, l.description AS description,  l.nom_lunette AS nom, COUNT(n.note) AS nb_notes, AVG(n.note) AS moyenne_notes
+    sql = '''SELECT l.prix_lunette AS prix, l.id_lunette AS id_article, CONCAT(l.nom_lunette, '.jpg') AS image,
+     SUM(d.stock) AS stock, l.description AS description,  l.nom_lunette AS nom, COUNT(n.note) AS nb_notes,
+      AVG(n.note) AS moyenne_notes
     FROM lunette l
     LEFT JOIN declinaison d ON d.id_lunette = l.id_lunette
     LEFT JOIN note n ON n.id_lunette = l.id_lunette
     WHERE l.id_lunette = %s
-    GROUP BY prix, id_article, image, stock, description, nom
+    GROUP BY prix, id_article, image, stock, description, nom;
     '''
     mycursor.execute(sql, id_article)
     article = mycursor.fetchone()
@@ -41,7 +43,7 @@ def client_article_details():
         LEFT JOIN utilisateur ON commentaire.id_utilisateur = utilisateur.id_utilisateur
     WHERE id_lunette =%s
     GROUP BY commentaire, nom, id_utilisateur, date_publication, id_article
-     ORDER BY date_publication DESC'''
+     ORDER BY date_publication, commentaire.id_utilisateur DESC'''
     mycursor.execute(sql, ( id_article))
     commentaires = mycursor.fetchall()
     print(commentaires)
@@ -74,7 +76,6 @@ def client_article_details():
     mycursor.execute(sql, (id_article,id_client, id_article))
     nb_commentaires = mycursor.fetchone()
     print(nb_commentaires)
-
     sql = "UPDATE lunette SET nb_consultation = nb_consultation+1 WHERE id_lunette=%s"
     mycursor.execute(sql, id_article)
     get_db().commit()

@@ -13,10 +13,16 @@ admin_commentaire = Blueprint('admin_commentaire', __name__,
 def admin_article_details():
     mycursor = get_db().cursor()
     id_article =  request.args.get('id_article', None)
-    sql = '''    requête admin_type_article_1    '''
-    commentaires = {}
-    sql = '''   requête admin_type_article_1_bis   '''
-    article = []
+    sql = '''SELECT commentaire.*, utilisateur.nom
+FROM commentaire 
+LEFT JOIN utilisateur ON utilisateur.id_utilisateur = commentaire.id_utilisateur 
+GROUP BY id_lunette, commentaire.id_utilisateur, date_publication, commentaire, valider, nom
+ORDER BY valider, date_publication DESC;'''
+    mycursor.execute(sql)
+    commentaires = mycursor.fetchall()
+    sql = '''   select * from lunette '''
+    mycursor.execute(sql)
+    article = mycursor.fetchall()
     return render_template('admin/article/show_article_commentaires.html'
                            , commentaires=commentaires
                            , article=article
@@ -28,8 +34,9 @@ def admin_comment_delete():
     id_utilisateur = request.form.get('id_utilisateur', None)
     id_article = request.form.get('id_article', None)
     date_publication = request.form.get('date_publication', None)
-    sql = '''    requête admin_type_article_2   '''
-    tuple_delete=(id_utilisateur,id_article,date_publication)
+    tuple_delete = (id_utilisateur, id_article, date_publication)
+    sql = ''' DELETE FROM commentaire WHERE id_utilisateur=%s AND id_lunette=%s AND date_publication=%s '''
+    mycursor.execute(sql, tuple_delete)
     get_db().commit()
     return redirect('/admin/article/commentaires?id_article='+id_article)
 
@@ -47,15 +54,17 @@ def admin_comment_add():
     id_article = request.form.get('id_article', None)
     date_publication = request.form.get('date_publication', None)
     commentaire = request.form.get('commentaire', None)
-    sql = '''    requête admin_type_article_3   '''
+    tuple_insert = (id_article, id_utilisateur ,date_publication,commentaire)
+    sql = '''  INSERT INTO commentaire(id_lunette,id_utilisateur,date_publication,commentaire,valider) VALUES (%s,%s,%s,%s,1)'''
+    mycursor.execute(sql, tuple_insert)
     get_db().commit()
     return redirect('/admin/article/commentaires?id_article='+id_article)
 
 
-@admin_commentaire.route('/admin/article/commentaires/valider', methods=['POST','GET'])
+@admin_commentaire.route('/admin/article/commentaires/valider', methods=['GET'])
 def admin_comment_valider():
-    id_article = request.args.get('id_article', None)
     mycursor = get_db().cursor()
-    sql = '''   requête admin_type_article_4   '''
+    sql = '''UPDATE commentaire SET valider=1 WHERE valider IS NULL'''
+    mycursor.execute(sql)
     get_db().commit()
-    return redirect('/admin/article/commentaires?id_article='+id_article)
+    return redirect('/admin/article/commentaires?id_article=')
