@@ -28,6 +28,7 @@
                         <p>Stock actuel de la lunette : {{ article.stock }}</p>
                     </div>
                     <button type="submit" class="btn btn-primary">Modifier stock</button>
+                     <a href="/admin/article/show"><button class="btn btn-secondary  mt-4">annuler</button></a>
                 {% else %}
                     <div class="form-group">
                         <label for="declinaisons">Déclinaisons :</label>
@@ -43,6 +44,7 @@
                                     <button type="submit" id="submit_{{ declinaison.id_declinaison }}" class="btn btn-primary" style="display: none;">Modifier stock</button>
                                 </form>
                             {% endfor %}
+                         <a href="/admin/article/show"><button class="btn btn-secondary  mt-4">annuler</button></a>
                         </ul>
                     </div>
                 {% endif %}
