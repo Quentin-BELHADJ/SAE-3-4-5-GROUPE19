@@ -64,7 +64,7 @@ def admin_comment_add():
 @admin_commentaire.route('/admin/article/commentaires/valider', methods=['GET'])
 def admin_comment_valider():
     mycursor = get_db().cursor()
-    sql = '''UPDATE commentaire SET valider=1 WHERE valider IS NULL'''
+    sql = '''UPDATE commentaire SET valider=1 WHERE valider IS NULL OR valider=0'''
     mycursor.execute(sql)
     get_db().commit()
     return redirect('/admin/article/commentaires?id_article=')
