@@ -196,15 +196,15 @@ def client_panier_vider():
 def client_panier_delete_line():
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    id_article = request.form.get('id_article')
+    id_declinaison = request.form.get('id_declinaison')
 
     # Sélection de la ligne du panier à supprimer
     sql_select_panier = '''SELECT id_declinaison, quantite FROM ligne_panier WHERE id_utilisateur = %s AND id_declinaison = %s'''
-    mycursor.execute(sql_select_panier, (id_client, id_article))
+    mycursor.execute(sql_select_panier, (id_client, id_declinaison))
     panier_item = mycursor.fetchone()
-
+    print('panier_item', panier_item)
     if panier_item:
-        id_declinaison = panier_item['id_declinaison']
+        print('caca')
         quantite = panier_item['quantite']
 
         # Suppression de la ligne du panier
