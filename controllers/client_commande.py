@@ -14,10 +14,22 @@ client_commande = Blueprint('client_commande', __name__,
 def client_commande_valide():
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    sql = """SELECT lunette.nom_lunette AS nom, declinaison.prix AS prix, ligne_panier.quantite AS quantite FROM ligne_panier 
-    LEFT JOIN declinaison ON declinaison.id_declinaison = ligne_panier.id_declinaison
-    LEFT JOIN lunette ON declinaison.id_lunette = lunette.id_lunette
-    WHERE ligne_panier.id_utilisateur = %s;"""
+    sql = """SELECT 
+    lunette.nom_lunette AS nom, 
+    declinaison.prix AS prix, 
+    ligne_panier.quantite AS quantite,
+    couleur.libelle AS libelle_couleur
+FROM 
+    ligne_panier 
+LEFT JOIN 
+    declinaison ON declinaison.id_declinaison = ligne_panier.id_declinaison
+LEFT JOIN 
+    lunette ON declinaison.id_lunette = lunette.id_lunette
+LEFT JOIN
+    couleur ON declinaison.id_couleur = couleur.id_couleur
+WHERE 
+    ligne_panier.id_utilisateur = %s;
+"""
     mycursor.execute(sql, id_client)
     articles_panier = mycursor.fetchall()
 
@@ -104,14 +116,34 @@ def client_commande_show():
                 WHERE c.id_commande = %s'''
         mycursor.execute(sql,id_commande)
         commande_adresses = mycursor.fetchone()
-        sql = """SELECT l.nom_lunette AS nom, d.prix AS prix, lc.quantite AS quantite, lc.quantite*d.prix AS prix_ligne FROM commande c
-                LEFT JOIN utilisateur u ON c.id_utilisateur = u.id_utilisateur
-                LEFT JOIN ligne_commande lc ON lc.id_commande = c.id_commande
-                LEFT JOIN declinaison d ON d.id_declinaison = lc.id_declinaison
-                LEFT JOIN lunette l ON d.id_lunette = l.id_lunette
-                WHERE  c.id_commande = %s"""
+        sql = """SELECT 
+    l.nom_lunette AS nom, 
+    d.prix AS prix, 
+    lc.quantite AS quantite, 
+    lc.quantite * d.prix AS prix_ligne,
+    couleur.libelle AS libelle_couleur
+FROM 
+    commande c
+LEFT JOIN 
+    utilisateur u ON c.id_utilisateur = u.id_utilisateur
+LEFT JOIN 
+    ligne_commande lc ON lc.id_commande = c.id_commande
+LEFT JOIN 
+    declinaison d ON d.id_declinaison = lc.id_declinaison
+LEFT JOIN 
+    lunette l ON d.id_lunette = l.id_lunette
+LEFT JOIN 
+    couleur ON d.id_couleur = couleur.id_couleur
+WHERE  
+    c.id_commande = %s;
+"""
         mycursor.execute(sql,id_commande)
         articles_commande = mycursor.fetchall()
+
+        print(articles_commande)
+        print(commandes)
+        print(articles_commande)
+
     return render_template('client/commandes/show.html'
                            , commandes=commandes
                            , articles_commande=articles_commande
