@@ -190,16 +190,14 @@ INSERT INTO fournisseur (id_fournisseur, libelle_fournisseur) VALUES
 INSERT INTO etat(id_etat, libelle_etat) VALUES (1,'en attente'),
                                                (2,'expédié');
 
-INSERT INTO utilisateur(id_utilisateur,login,email,password,role,nom) VALUES
-(1,'admin','admin@admin.fr',
-    'sha256$dPL3oH9ug1wjJqva$2b341da75a4257607c841eb0dbbacb76e780f4015f0499bb1a164de2a893fdbf',
-    'ROLE_admin','admin'),
-(2,'client','client@client.fr',
-    'sha256$1GAmexw1DkXqlTKK$31d359e9adeea1154f24491edaa55000ee248f290b49b7420ced542c1bf4cf7d',
-    'ROLE_client','client'),
-(3,'client2','client2@client2.fr',
-    'sha256$MjhdGuDELhI82lKY$2161be4a68a9f236a27781a7f981a531d11fdc50e4112d912a7754de2dfa0422',
-    'ROLE_client','client2');
+INSERT INTO utilisateur(id_utilisateur,login,email,nom,password,role) VALUES
+ (1 , 'admin'   , 'admin@admin.fr','admin', 'sha256$dPL3oH9ug1wjJqva$2b341da75a4257607c841eb0dbbacb76e780f4015f0499bb1a164de2a893fdbf' , 'ROLE_admin' ),
+(2 , 'client'  , 'client@client.fr' , 'client'  , 'sha256$1GAmexw1DkXqlTKK$31d359e9adeea1154f24491edaa55000ee248f290b49b7420ced542c1bf4cf7d' , 'ROLE_client' ),
+(3 , 'client2' , 'client2@client2.fr', 'client2' , 'sha256$MjhdGuDELhI82lKY$2161be4a68a9f236a27781a7f981a531d11fdc50e4112d912a7754de2dfa0422' , 'ROLE_client' ),
+(4 , 'client3' , 'client3@gmail.com', 'client3' , 'sha256$EtzORFk4cs3J4a6r$4f045536fc178adf879fb29af831ac54065212df30d478c54ac355b25e657027' , 'ROLE_client' ),
+(5 , 'client4' , 'client4' , 'client4' , 'sha256$n4dPDiS2gOdrhgQS$a713b4540dbf5d8e20a720299f6c0e99c6f64782bf73adef9b761a171a134359' , 'ROLE_client' ),
+(6 , 'client5' , 'client5'  , 'client5' , 'sha256$BpkQtxQVANbYZUbg$75fb773c680a3922def295e7ae5211c90ceed29d2f93e46ada6118cfc2a98f56' , 'ROLE_client' ),
+(7 , 'client6' , 'client6' , 'client6' , 'sha256$5rUv6eOcFESZ6t0W$ed1dd6d175d1090ea5325db33534b1e28694d8dc550fc2605affaade4133886c' , 'ROLE_client' );
 
 INSERT INTO sexe (libelle) VALUES
 ('H'),('F'),('HF');

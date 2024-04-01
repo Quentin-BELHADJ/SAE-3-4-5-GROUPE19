@@ -31,6 +31,44 @@ def show_type_article_stock():
                            , labels=labels
                            , values=values)
 
+
+@admin_dataviz.route('/admin/dataviz/commentaires')
+def show_data_comm():
+    mycursor = get_db().cursor()
+    sql = '''SELECT
+    c.id_categorie,
+    cat.libelle AS categorie,
+    COUNT(c.id_commentaire) AS nombre_commentaires,
+    IFNULL(AVG(n.note), 0) AS note_moyenne
+FROM
+    commentaire c
+LEFT JOIN
+    note n ON c.id_commentaire = n.id_commentaire
+JOIN
+    article a ON c.id_article = a.id_article
+JOIN
+    categorie cat ON a.id_categorie = cat.id_categorie
+GROUP BY
+    c.id_categorie, cat.libell
+           '''
+    # mycursor.execute(sql)
+    # datas_show = mycursor.fetchall()
+    # labels = [str(row['libelle']) for row in datas_show]
+    # values = [int(row['nbr_articles']) for row in datas_show]
+
+    # sql = '''
+    #
+    #        '''
+    datas_show = []
+    labels = []
+    values = []
+
+    return render_template('admin/dataviz/dataviz_commentaires.html'
+                           , datas_show=datas_show
+                           , labels=labels
+                           , values=values)
+
+
 @admin_dataviz.route('/admin/dataviz/etat_wish_list')
 def show_liste_envie_data():
     mycursor = get_db().cursor()
