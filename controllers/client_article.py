@@ -14,10 +14,25 @@ def client_article_show():                                 # remplace client_ind
     mycursor = get_db().cursor()
     id_client = session['id_user']
 
-    sql = '''SELECT l.id_lunette AS id_article, nom_lunette as nom, prix_lunette AS prix , CONCAT(nom_lunette,'.jpg') AS image, d.stock as stock
-    FROM lunette l
-    JOIN declinaison d on l.id_lunette = d.id_lunette
-    ORDER BY nom_lunette;'''
+    sql = '''
+    SELECT
+    l.id_lunette AS id_article,
+    nom_lunette AS nom,
+    prix_lunette AS prix,
+    CONCAT(nom_lunette,'.jpg') AS image,
+    SUM(d.stock) AS stock,
+    COUNT(d.id_couleur) AS nb_declinaisons,
+    GROUP_CONCAT(d.id_declinaison) AS id_declinaison -- Concatenate the IDs of declinaisons for each lunette
+FROM
+    lunette l
+JOIN
+    declinaison d ON l.id_lunette = d.id_lunette
+GROUP BY
+    l.id_lunette, l.nom_lunette, l.prix_lunette, CONCAT(nom_lunette,'.jpg') -- Group by lunette details
+ORDER BY
+    nom_lunette;
+    '''
+
     mycursor.execute(sql)
     lunettes = mycursor.fetchall()
 
@@ -34,26 +49,27 @@ def client_article_show():                                 # remplace client_ind
 
     # pour le filtre
     types_article = marques
-
-    list_param = [id_client]
-    articles_panier = []
     sql = """SELECT 
-                 lunette.id_lunette AS id_article,
-                 lunette.nom_lunette AS nom,
-                 lunette.prix_lunette AS prix,
-                 ligne_panier.quantite AS quantite,
-                 ligne_panier.id_declinaison AS id_declinaison
-             FROM 
-                 ligne_panier
-             LEFT JOIN 
-                 declinaison ON declinaison.id_declinaison = ligne_panier.id_declinaison
-             LEFT JOIN 
-                 lunette ON declinaison.id_lunette = lunette.id_lunette
-             WHERE 
-                 ligne_panier.id_utilisateur = %s;"""
-
-    mycursor.execute(sql, list_param)
+    lunette.id_lunette AS id_article,
+    lunette.nom_lunette AS nom,
+    lunette.prix_lunette AS prix,
+    ligne_panier.quantite AS quantite,
+    ligne_panier.id_declinaison AS id_declinaison,
+    couleur.libelle AS libelle_couleur
+FROM 
+    ligne_panier
+JOIN 
+    declinaison ON declinaison.id_declinaison = ligne_panier.id_declinaison
+JOIN 
+    lunette ON declinaison.id_lunette = lunette.id_lunette
+LEFT JOIN 
+    couleur ON declinaison.id_couleur = couleur.id_couleur
+WHERE 
+    ligne_panier.id_utilisateur = %s;
+"""
+    mycursor.execute(sql, (id_client,))
     articles_panier = mycursor.fetchall()
+    print('articles_panier', articles_panier)
 
     if len(articles_panier) >= 1:
         sql = ''' SELECT SUM(d.prix*lp.quantite) AS prix FROM ligne_panier lp
@@ -62,6 +78,11 @@ def client_article_show():                                 # remplace client_ind
         prix_total = mycursor.fetchone()["prix"]
     else:
         prix_total = None
+
+    #print(articles)
+    #print(articles_panier)
+    #print(prix_total)
+    #print(types_article)
 
     return render_template('client/boutique/panier_article.html'
                            , articles=articles
