@@ -144,7 +144,7 @@ CREATE TABLE historique(
 CREATE TABLE commentaire(
    id_lunette INT,
    id_utilisateur INT,
-   date_publication DATE,
+   date_publication DATETIME,
    commentaire VARCHAR(50),
    valider BOOLEAN,
    PRIMARY KEY(id_lunette, id_utilisateur, date_publication),

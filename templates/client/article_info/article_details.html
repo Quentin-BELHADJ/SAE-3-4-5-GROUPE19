@@ -39,7 +39,8 @@
     </div>
         {% if commandes_articles.nb_commandes_article is defined and commandes_articles.nb_commandes_article > 0 %}
             <div class="col-12">
-                {% if note is defined and note is number %}
+                {%  if note is defined and note is not none and note.isnumeric() %}
+) %}
 
                     <form  action="/client/note/edit"   method="post" class="row">
                     <input type="hidden" name="id_article" value="{{ article.id_article }}">
@@ -61,7 +62,7 @@
                     </form>
                 {% else %}
                     <form  action="/client/note/add"   method="post" class="row">
-                    <input type="hidden" name="id_article" value="{{ article.id_article }}">
+                    <input type="hidden" name="id_article" id="id_article" value="{{ article.id_article }}">
                     <div class="col-md-3">
                         <label for="input_note" class="d-flex justify-content-end align-items-end pe-3">Mettre une note  sur cet article : </label>
                     </div>
@@ -86,12 +87,12 @@
       {% if nb_commentaires.nb_commentaires_total is not defined or nb_commentaires.nb_commentaires_utilisateur is not defined %}
          <strong>NB comment not defined</strong>
                 {% else %}
-            <strong>Nombre de commentaire(s) : {{ nb_commentaires.nb_commentaires_utilisateur }} / 5 </strong><br>
+            <strong>Vos commentaire(s) : {{ nb_commentaires.nb_commentaires_utilisateur }} / 3 </strong><br>
             <strong>Nombre de commentaire(s) total :  {{nb_commentaires.nb_commentaires_total }}</strong>
         {% endif %}
       </div>
       {% if commandes_articles.nb_commandes_article is defined and commandes_articles.nb_commandes_article > 0 and
-            ((nb_commentaires.nb_commentaires_utilisateur is defined and nb_commentaires.nb_commentaires_utilisateur <5) or nb_commentaires.nb_commentaires_utilisateur is not defined) %}
+            ((nb_commentaires.nb_commentaires_utilisateur is defined and nb_commentaires.nb_commentaires_utilisateur <3) or nb_commentaires.nb_commentaires_utilisateur is not defined) %}
           <form  action="/client/commentaire/add"   method="post">
                 <div class="col">
                   <label for="input_commentaire" class="form-label">Mettez un commentaire sur cet article : </label>
@@ -104,7 +105,7 @@
                 </form>
             </form>
         {% else %}
-            <small>(seul les clients qui ont acheté cet article peuvent le commenter ou nombre maxi de commentaires sur cet article (5) atteind)</small>
+            <small>(seul les clients qui ont acheté cet article peuvent le commenter ou nombre maxi de commentaires sur cet article (3) atteind)</small>
         {% endif %}
 
     </div>
@@ -119,6 +120,7 @@
             <tr>
                 <th>nom(pseudo)</th>
                 <th>Commentaires</th>
+                <th>Date</th>
                 <th></th>
             </tr>
             </thead>
@@ -135,6 +137,10 @@
 {#                        {{ commentaire.__dict__ }}#}
 {#                        </td>#}
                         <td>
+                        {{ commentaire.date_publication }}
+                            </td>
+                        <td>
+
                             {% if commentaire.id_utilisateur == session['id_user'] %}
                                   <form  action="/client/commentaire/delete"  style="display: inline-block;"  method="post" >
                                       <input type="hidden" name="id_article" value="{{ commentaire.id_article }}">
