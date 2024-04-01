@@ -11,25 +11,35 @@ admin_dataviz = Blueprint('admin_dataviz', __name__,
 @admin_dataviz.route('/admin/dataviz/etat1')
 def show_type_article_stock():
     mycursor = get_db().cursor()
-    sql = '''
-    
-           '''
-    # mycursor.execute(sql)
-    # datas_show = mycursor.fetchall()
-    # labels = [str(row['libelle']) for row in datas_show]
-    # values = [int(row['nbr_articles']) for row in datas_show]
+    mycursor.execute("""
+            SELECT m.libelle_marque AS marque, SUM(d.prix) AS somme_prix
+            FROM lunette l
+            INNER JOIN marque m ON l.id_marque = m.id_marque
+            INNER JOIN declinaison d ON l.id_lunette = d.id_lunette
+            GROUP BY m.libelle_marque;
+        """)
+    result = mycursor.fetchall()
 
-    # sql = '''
-    #         
-    #        '''
-    datas_show=[]
-    labels=[]
-    values=[]
+    marques = [row['marque'] for row in result]
+    sommes_prix = [row['somme_prix'] for row in result]
+    print('marques', marques)
+    print('sommes_prix', sommes_prix)
+    zipped_data = zip(marques, sommes_prix)
 
-    return render_template('admin/dataviz/dataviz_etat_1.html'
-                           , datas_show=datas_show
-                           , labels=labels
-                           , values=values)
+    mycursor.execute("""
+                SELECT m.libelle_marque AS marque, COUNT(d.id_declinaison) AS nb_declinaisons
+                FROM lunette l
+                INNER JOIN marque m ON l.id_marque = m.id_marque
+                INNER JOIN declinaison d ON l.id_lunette = d.id_lunette
+                GROUP BY m.libelle_marque;
+            """)
+    result_decli = mycursor.fetchall()
+
+    marques_decli = [row['marque'] for row in result_decli]
+    nb_declinaisons = [row['nb_declinaisons'] for row in result_decli]
+    zipped_declinaisons = zip(marques, nb_declinaisons)
+
+    return render_template('admin/dataviz/dataviz_etat_1.html', marques=marques, sommes_prix=sommes_prix, zipped_data=zipped_data, marques_decli=marques_decli,  nb_declinaisons=nb_declinaisons, zipped_declinaisons=zipped_declinaisons)
 
 @admin_dataviz.route('/admin/dataviz/etat_wish_list')
 def show_liste_envie_data():
