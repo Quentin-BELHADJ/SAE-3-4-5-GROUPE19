@@ -5,19 +5,19 @@ CREATE TABLE couleur(
    libelle VARCHAR(50),
    code_couleur INT,
    PRIMARY KEY(id_couleur)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE etat(
    id_etat INT AUTO_INCREMENT,
    libelle_etat VARCHAR(50),
    PRIMARY KEY(id_etat)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE categorie_lunette(
    id_categorie_lunette INT AUTO_INCREMENT,
    libelle_categorie VARCHAR(50),
    PRIMARY KEY(id_categorie_lunette)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE utilisateur(
    id_utilisateur INT AUTO_INCREMENT,
@@ -27,7 +27,7 @@ CREATE TABLE utilisateur(
    password VARCHAR(255),
    role VARCHAR(50),
    PRIMARY KEY(id_utilisateur)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE adresse(
    id_adresse INT AUTO_INCREMENT,
@@ -39,25 +39,25 @@ CREATE TABLE adresse(
    id_utilisateur INT NOT NULL,
    PRIMARY KEY(id_adresse),
    FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE marque(
    id_marque INT AUTO_INCREMENT,
    libelle_marque VARCHAR(50),
    PRIMARY KEY(id_marque)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE fournisseur(
    id_fournisseur INT AUTO_INCREMENT,
    libelle_fournisseur VARCHAR(50),
    PRIMARY KEY(id_fournisseur)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE sexe(
    id_sexe INT AUTO_INCREMENT,
    libelle VARCHAR(50),
    PRIMARY KEY(id_sexe)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE lunette(
    id_lunette INT AUTO_INCREMENT,
@@ -76,7 +76,7 @@ CREATE TABLE lunette(
    FOREIGN KEY(id_fournisseur) REFERENCES fournisseur(id_fournisseur),
    FOREIGN KEY(id_marque) REFERENCES marque(id_marque),
    FOREIGN KEY(id_sexe) REFERENCES sexe(id_sexe)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE declinaison(
    id_declinaison INT AUTO_INCREMENT,
@@ -88,7 +88,7 @@ CREATE TABLE declinaison(
    PRIMARY KEY(id_declinaison),
    FOREIGN KEY(id_couleur) REFERENCES couleur(id_couleur),
    FOREIGN KEY(id_lunette) REFERENCES lunette(id_lunette)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE commande(
    id_commande INT AUTO_INCREMENT,
@@ -102,7 +102,7 @@ CREATE TABLE commande(
    FOREIGN KEY(id_adresse) REFERENCES adresse(id_adresse),
    FOREIGN KEY(id_adresse_1) REFERENCES adresse(id_adresse),
    FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE ligne_commande(
    id_declinaison INT,
@@ -112,7 +112,7 @@ CREATE TABLE ligne_commande(
    PRIMARY KEY(id_declinaison, id_commande),
    FOREIGN KEY(id_declinaison) REFERENCES declinaison(id_declinaison),
    FOREIGN KEY(id_commande) REFERENCES commande(id_commande)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE ligne_panier(
    id_declinaison INT,
@@ -121,7 +121,7 @@ CREATE TABLE ligne_panier(
    PRIMARY KEY(id_declinaison, id_utilisateur),
    FOREIGN KEY(id_declinaison) REFERENCES declinaison(id_declinaison),
    FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE note(
    id_lunette INT,
@@ -130,7 +130,7 @@ CREATE TABLE note(
    PRIMARY KEY(id_lunette, id_utilisateur),
    FOREIGN KEY(id_lunette) REFERENCES lunette(id_lunette),
    FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE historique(
    id_lunette INT,
@@ -139,18 +139,18 @@ CREATE TABLE historique(
    PRIMARY KEY(id_lunette, id_utilisateur, date_consultation),
    FOREIGN KEY(id_lunette) REFERENCES lunette(id_lunette),
    FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE commentaire(
    id_lunette INT,
    id_utilisateur INT,
    date_publication DATETIME,
-   commentaire VARCHAR(50),
+   commentaire VARCHAR(250),
    valider BOOLEAN,
    PRIMARY KEY(id_lunette, id_utilisateur, date_publication),
    FOREIGN KEY(id_lunette) REFERENCES lunette(id_lunette),
    FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE liste_envie(
    id_lunette INT,
@@ -159,7 +159,7 @@ CREATE TABLE liste_envie(
    PRIMARY KEY(id_lunette, id_utilisateur, date_update),
    FOREIGN KEY(id_lunette) REFERENCES lunette(id_lunette),
    FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO couleur (libelle, code_couleur) VALUES
 ('Noir', 1),
@@ -190,16 +190,14 @@ INSERT INTO fournisseur (id_fournisseur, libelle_fournisseur) VALUES
 INSERT INTO etat(id_etat, libelle_etat) VALUES (1,'en attente'),
                                                (2,'expédié');
 
-INSERT INTO utilisateur(id_utilisateur,login,email,password,role,nom) VALUES
-(1,'admin','admin@admin.fr',
-    'sha256$dPL3oH9ug1wjJqva$2b341da75a4257607c841eb0dbbacb76e780f4015f0499bb1a164de2a893fdbf',
-    'ROLE_admin','admin'),
-(2,'client','client@client.fr',
-    'sha256$1GAmexw1DkXqlTKK$31d359e9adeea1154f24491edaa55000ee248f290b49b7420ced542c1bf4cf7d',
-    'ROLE_client','client'),
-(3,'client2','client2@client2.fr',
-    'sha256$MjhdGuDELhI82lKY$2161be4a68a9f236a27781a7f981a531d11fdc50e4112d912a7754de2dfa0422',
-    'ROLE_client','client2');
+INSERT INTO utilisateur(id_utilisateur,login,email,nom,password,role) VALUES
+ (1 , 'admin'   , 'admin@admin.fr','admin', 'sha256$dPL3oH9ug1wjJqva$2b341da75a4257607c841eb0dbbacb76e780f4015f0499bb1a164de2a893fdbf' , 'ROLE_admin' ),
+(2 , 'client'  , 'client@client.fr' , 'client'  , 'sha256$1GAmexw1DkXqlTKK$31d359e9adeea1154f24491edaa55000ee248f290b49b7420ced542c1bf4cf7d' , 'ROLE_client' ),
+(3 , 'client2' , 'client2@client2.fr', 'client2' , 'sha256$MjhdGuDELhI82lKY$2161be4a68a9f236a27781a7f981a531d11fdc50e4112d912a7754de2dfa0422' , 'ROLE_client' ),
+(4 , 'client3' , 'client3@gmail.com', 'client3' , 'sha256$EtzORFk4cs3J4a6r$4f045536fc178adf879fb29af831ac54065212df30d478c54ac355b25e657027' , 'ROLE_client' ),
+(5 , 'client4' , 'client4' , 'client4' , 'sha256$n4dPDiS2gOdrhgQS$a713b4540dbf5d8e20a720299f6c0e99c6f64782bf73adef9b761a171a134359' , 'ROLE_client' ),
+(6 , 'client5' , 'client5'  , 'client5' , 'sha256$BpkQtxQVANbYZUbg$75fb773c680a3922def295e7ae5211c90ceed29d2f93e46ada6118cfc2a98f56' , 'ROLE_client' ),
+(7 , 'client6' , 'client6' , 'client6' , 'sha256$5rUv6eOcFESZ6t0W$ed1dd6d175d1090ea5325db33534b1e28694d8dc550fc2605affaade4133886c' , 'ROLE_client' );
 
 INSERT INTO sexe (libelle) VALUES
 ('H'),('F'),('HF');
@@ -286,10 +284,52 @@ VALUES
 SELECT * FROM declinaison;
 
 INSERT INTO adresse(nom,rue, code_postal,ville, id_utilisateur)
-VALUES ("NOM prénom", "1 rue de machin" ,"90000", "Belfort",2),
-    ("BELHADJ Quentin", "9 rue des maraîchers" ,"90000", "Belfort",2);
+VALUES ('NOM prénom', '1 rue de machin' ,90000, 'Belfort',2),
+    ('BELHADJ Quentin', '9 rue des maraîchers' ,90000, 'Belfort',2);
 
 INSERT INTO ligne_panier VALUES (1,2,1),
                                 (2,2,2),
                                 (35,2,1),
                                 (36,2,1);
+
+-- Commentaires pour l'utilisateur 2 (client)
+INSERT INTO commentaire (id_lunette, id_utilisateur, date_publication, commentaire, valider) VALUES
+(1, 2, DATE_ADD(NOW(), INTERVAL -FLOOR(RAND() * 30) DAY), 'Ces lunettes sont vraiment géniales !', 0),
+(2, 2, DATE_ADD(NOW(), INTERVAL -FLOOR(RAND() * 30) DAY), 'Je suis déçu de la qualité des lunettes.', 0),
+(3, 2, DATE_ADD(NOW(), INTERVAL -FLOOR(RAND() * 30) DAY), 'Excellent rapport qualité-prix.', 0);
+
+-- Commentaires pour l'utilisateur 3 (client2)
+INSERT INTO commentaire (id_lunette, id_utilisateur, date_publication, commentaire, valider) VALUES
+(1, 3, DATE_ADD(NOW(), INTERVAL -FLOOR(RAND() * 30) DAY), 'J\'ai adoré ces lunettes, elles sont superbes !', 0),
+(2, 3, DATE_ADD(NOW(), INTERVAL -FLOOR(RAND() * 30) DAY), 'Très confortables, je recommande.', 0),
+(4, 3, DATE_ADD(NOW(), INTERVAL -FLOOR(RAND() * 30) DAY), 'Le design est vraiment original.', 0);
+
+-- Commentaires pour l'utilisateur 4 (client3)
+INSERT INTO commentaire (id_lunette, id_utilisateur, date_publication, commentaire, valider) VALUES
+(2, 4, DATE_ADD(NOW(), INTERVAL -FLOOR(RAND() * 30) DAY), 'Je ne suis pas satisfait de cet achat.', 0),
+(3, 4, DATE_ADD(NOW(), INTERVAL -FLOOR(RAND() * 30) DAY), 'Les lunettes sont arrivées rapidement, merci !', 0),
+(5, 4, DATE_ADD(NOW(), INTERVAL -FLOOR(RAND() * 30) DAY), 'Je les ai offertes en cadeau, la personne était ravie.', 0);
+
+-- Commentaires pour l'utilisateur 5 (client4)
+INSERT INTO commentaire (id_lunette, id_utilisateur, date_publication, commentaire, valider) VALUES
+(1, 5, DATE_ADD(NOW(), INTERVAL -FLOOR(RAND() * 30) DAY), 'Très bon produit, conforme à la description.', 0),
+(4, 5, DATE_ADD(NOW(), INTERVAL -FLOOR(RAND() * 30) DAY), 'Lunettes de qualité, je recommande.', 0),
+(6, 5, DATE_ADD(NOW(), INTERVAL -FLOOR(RAND() * 30) DAY), 'Service client réactif et professionnel.', 0);
+
+-- Commentaires pour l'utilisateur 6 (client5)
+INSERT INTO commentaire (id_lunette, id_utilisateur, date_publication, commentaire, valider) VALUES
+(3, 6, DATE_ADD(NOW(), INTERVAL -FLOOR(RAND() * 30) DAY), 'Les lunettes sont un peu fragiles à mon goût.', 0),
+(5, 6, DATE_ADD(NOW(), INTERVAL -FLOOR(RAND() * 30) DAY), 'Je suis satisfait de mon achat, merci !', 0),
+(7, 6, DATE_ADD(NOW(), INTERVAL -FLOOR(RAND() * 30) DAY), 'Je les ai reçues en parfait état.', 0);
+
+-- Commentaires pour l'utilisateur 7 (client6)
+INSERT INTO commentaire (id_lunette, id_utilisateur, date_publication, commentaire, valider) VALUES
+(4, 7, DATE_ADD(NOW(), INTERVAL -FLOOR(RAND() * 30) DAY), 'Les lunettes sont conformes à mes attentes.', 0),
+(6, 7, DATE_ADD(NOW(), INTERVAL -FLOOR(RAND() * 30) DAY), 'Je les ai commandées pour un événement, elles sont parfaites !', 0),
+(8, 7, DATE_ADD(NOW(), INTERVAL -FLOOR(RAND() * 30) DAY), 'Livraison rapide et emballage soigné.', 0);
+
+INSERT INTO note (id_lunette, id_utilisateur, note)
+SELECT c.id_lunette, c.id_utilisateur, ROUND(RAND() * 3) + 2
+FROM commentaire c
+GROUP BY c.id_lunette, c.id_utilisateur
+HAVING COUNT(*) >= 1;
