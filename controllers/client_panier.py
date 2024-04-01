@@ -15,9 +15,9 @@ def client_panier_add():
     id_declinaison = request.form.get('id_article')
     id_utilisateur = session['id_user']
     quantite = int(request.form.get('quantite'))
-    print("id_declinaison ", id_declinaison)
-    print("id_utilisateur ",id_utilisateur)
-    print("quantite ",quantite)
+    #print("id_declinaison ", id_declinaison)
+    #print("id_utilisateur ",id_utilisateur)
+    #print("quantite ",quantite)
 
     try:
         mycursor.execute("SELECT stock FROM declinaison WHERE declinaison.id_lunette =%s;", (id_declinaison,))
@@ -40,9 +40,13 @@ def client_panier_add():
                 nouveau_stock = stock_actuel - quantite
                 print('nouveau stock : ', nouveau_stock)
                 mycursor.execute("UPDATE declinaison SET stock = %s WHERE declinaison.id_lunette = %s",[nouveau_stock,id_declinaison])
+                
+                sql = "DELETE FROM liste_envie WHERE id_utilisateur=%s AND id_lunette=%s"
+                mycursor.execute(sql, (id_utilisateur, id_declinaison))
+                
                 get_db().commit()
-
                 flash("L'article a été ajouté à votre panier avec succès.")
+                
                 return redirect('/client/article/show')
             else:
                 flash("Stock insuffisant.")

@@ -50,11 +50,18 @@ def client_liste_envies_show():
         ORDER BY le.date_update DESC"""
     mycursor.execute(sql, (id_client))
     articles_liste_envies = mycursor.fetchall()
-    articles_historique = []
+    sql = "DELETE FROM historique WHERE id_utilisateur=%s AND MONTH(NOW()- date_consultation) >= 1;"
+    mycursor.execute(sql, id_client);
+    get_db().commit()
+    mycursor = get_db().cursor()
+    sql = """SELECT prix_lunette AS prix,  CONCAT(nom_lunette,'.jpg') AS image, nom_lunette AS lunette 
+    FROM historique  JOIN lunette ON historique.id_lunette = lunette.id_lunette WHERE id_utilisateur = %s ORDER BY date_consultation DESC"""
+    mycursor.execute(sql, id_client)
+    articles_historique = mycursor.fetchall()
     return render_template('client/liste_envies/liste_envies_show.html'
                            ,articles_liste_envies=articles_liste_envies
                            , articles_historique=articles_historique
-                           #, nb_liste_envies= nb_liste_envies
+                           , nb_liste_envies= len(articles_liste_envies)
                            )
 
 
@@ -62,14 +69,17 @@ def client_liste_envies_show():
 def client_historique_add(article_id, client_id):
     mycursor = get_db().cursor()
     client_id = session['id_user']
-    # rechercher si l'article pour cet utilisateur est dans l'historique
-    # si oui mettre
-    sql ='''   '''
+    sql ='''DELETE FROM historique WHERE id_utilisateur=%s and id_lunette=%s'''
+    mycursor.execute(sql, (client_id,article_id))
+    sql = 'INSERT INTO historique VALUES (%s,%s, NOW())'
     mycursor.execute(sql, (article_id, client_id))
-    historique_produit = mycursor.fetchall()
-    sql ='''   '''
+    sql ='''SELECT * FROM historique WHERE id_utilisateur=%s'''
     mycursor.execute(sql, (client_id))
-    historiques = mycursor.fetchall()
+    historique_produit = mycursor.fetchall()
+    if len(historique_produit) > 6:
+        sql = '''DELETE FROM historique WHERE date_consultation = (SELECT MIN(date_consultation) FROM historique) AND id_utilisateur=%s;'''
+        mycursor.execute(sql, client_id)
+    get_db().commit()
 
 
 @client_liste_envies.route('/client/envies/up', methods=['get'])

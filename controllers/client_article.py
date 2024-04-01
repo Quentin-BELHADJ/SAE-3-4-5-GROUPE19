@@ -2,7 +2,6 @@
 # -*- coding:utf-8 -*-
 from flask import Blueprint
 from flask import Flask, request, render_template, redirect, abort, flash, session
-
 from connexion_db import get_db
 
 client_article = Blueprint('client_article', __name__,
@@ -58,7 +57,7 @@ def client_article_show():                                 # remplace client_ind
 
     if len(articles_panier) >= 1:
         sql = ''' SELECT SUM(d.prix*lp.quantite) AS prix FROM ligne_panier lp
-                   LEFT JOIN declinaison d ON d.id_declinaison = lp.id_declinaison WHERE lp.id_utilisateur = %s '''
+                   LEFT JOIN declinaison d ON d.id_declinaison = lp.id_declinaison WHERE lp.id_utilisateur = %s'''
         mycursor.execute(sql,id_client)
         prix_total = mycursor.fetchone()["prix"]
     else:
