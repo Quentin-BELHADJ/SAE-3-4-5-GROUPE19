@@ -50,8 +50,8 @@ def client_liste_envies_show():
         ORDER BY le.date_update DESC"""
     mycursor.execute(sql, (id_client))
     articles_liste_envies = mycursor.fetchall()
-    sql = "DELETE FROM historique WHERE id_utilisateur=%s AND MONTH(NOW()- date_consultation) >= 1;"
-    mycursor.execute(sql, id_client);
+    sql = "DELETE FROM historique WHERE id_utilisateur=%s AND MONTH(NOW() - date_consultation) >= 1;"
+    mycursor.execute(sql, id_client)
     get_db().commit()
     mycursor = get_db().cursor()
     sql = """SELECT prix_lunette AS prix,  CONCAT(nom_lunette,'.jpg') AS image, nom_lunette AS lunette 
