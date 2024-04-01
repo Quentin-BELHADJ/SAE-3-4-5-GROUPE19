@@ -220,11 +220,75 @@ INSERT INTO lunette (nom_lunette,description, prix_lunette, id_categorie_lunette
 ('Lunettes de natation','De belle lunette pour nager', 20.99, 1, 3, 2, 3),
 ('Lunettes sans branches','De belle lunette sans branche', 199.99, 2, 4, 1, 3);
 
-INSERT INTO declinaison (stock, id_couleur,prix, id_lunette)
-SELECT 5, 1,prix_lunette, id_lunette
-FROM lunette ORDER BY id_lunette;
+INSERT INTO declinaison(stock, prix, id_lunette, id_couleur)
+VALUES
+    (5, 200, 1, 4),
+    (5, 150, 2, 1),
+    (5, 180, 3, 1),
+    (5, 250, 4, 1),
+    (1, 300, 5, 1),
+    (1, 300, 5, 2),
+    (1, 300, 5, 3),
+    (1, 300, 5, 4),
+    (1, 300, 5, 5),
+    (1, 120, 6, 1),
+    (1, 120, 6, 2),
+    (1, 120, 6, 3),
+    (1, 120, 6, 4),
+    (1, 120, 6, 5),
+    (1, 50, 7, 1),
+    (1, 50, 7, 2),
+    (1, 50, 7, 3),
+    (1, 50, 7, 4),
+    (1, 50, 7, 5),
+    (1, 250, 8, 1),
+    (1, 250, 8, 2),
+    (1, 250, 8, 3),
+    (1, 250, 8, 4),
+    (1, 250, 8, 5),
+    (1, 160, 9, 1),
+    (1, 160, 9, 2),
+    (1, 160, 9, 3),
+    (1, 160, 9, 4),
+    (1, 160, 9, 5),
+    (1, 100, 10, 1),
+    (1, 100, 10, 2),
+    (1, 100, 10, 3),
+    (1, 100, 10, 4),
+    (1, 100, 10, 5),
+    (1, 90, 11, 1),
+    (1, 90, 11, 2),
+    (1, 90, 11, 3),
+    (1, 90, 11, 4),
+    (1, 90, 11, 5),
+    (1, 999.99, 12, 1),
+    (1, 999.99, 12, 2),
+    (1, 999.99, 12, 3),
+    (1, 999.99, 12, 4),
+    (1, 999.99, 12, 5),
+    (1, 124.99, 13, 1),
+    (1, 124.99, 13, 2),
+    (1, 124.99, 13, 3),
+    (1, 124.99, 13, 4),
+    (1, 124.99, 13, 5),
+    (1, 20.99, 14, 1),
+    (1, 20.99, 14, 2),
+    (1, 20.99, 14, 3),
+    (1, 20.99, 14, 4),
+    (1, 20.99, 14, 5),
+    (1, 199.99, 15, 1),
+    (1, 199.99, 15, 2),
+    (1, 199.99, 15, 3),
+    (1, 199.99, 15, 4),
+    (1, 199.99, 15, 5);
+
+SELECT * FROM declinaison;
 
 INSERT INTO adresse(nom,rue, code_postal,ville, id_utilisateur)
-VALUES ("NOM prénom", "1 rue de machin" ,"90000", "Belfort",2);
+VALUES ("NOM prénom", "1 rue de machin" ,"90000", "Belfort",2),
+    ("BELHADJ Quentin", "9 rue des maraîchers" ,"90000", "Belfort",2);
 
-INSERT INTO ligne_panier VALUES (1,2,1),(2,2,2);
+INSERT INTO ligne_panier VALUES (1,2,1),
+                                (2,2,2),
+                                (35,2,1),
+                                (36,2,1);
