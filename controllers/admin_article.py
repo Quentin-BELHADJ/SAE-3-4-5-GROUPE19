@@ -17,14 +17,17 @@ admin_article = Blueprint('admin_article', __name__,
 @admin_article.route('/admin/article/show')
 def show_article():
     mycursor = get_db().cursor()
-    sql = '''SELECT l.id_lunette AS id_article, nom_lunette as nom, prix_lunette AS prix , CONCAT(nom_lunette,'.jpg') AS image, d.stock as stock
+    sql = '''SELECT l.id_lunette AS id_article, nom_lunette as nom, prix_lunette AS prix , CONCAT(nom_lunette,'.jpg') AS image, SUM(d.stock) as stock, COALESCE(SUM(CASE WHEN d.stock = 0 THEN 1 ELSE 0 END), 0) AS empty_stock_count
     FROM lunette l
-    JOIN declinaison d on l.id_lunette = d.id_lunette
+    LEFT JOIN declinaison d on l.id_lunette = d.id_lunette
+    GROUP BY l.id_lunette, nom_lunette, prix_lunette
     ORDER BY nom_lunette;
     '''
     mycursor.execute(sql)
     articles = mycursor.fetchall()
-    return render_template('admin/article/show_article.html', articles=articles)
+    return render_template('admin/article/show_article.html'
+                           , articles=articles)
+
 
 
 @admin_article.route('/admin/article/add', methods=['GET'])
@@ -104,25 +107,76 @@ def delete_article():
 def edit_article():
     if request.method == 'GET':
         id_article = request.args.get('id_article')
+        print(id_article)
         mycursor = get_db().cursor()
-        sql = '''SELECT l.nom_lunette as nom, CONCAT(l.nom_lunette, '.jpg') as image, l.id_lunette as id_lunette, l.prix_lunette as prix, d.stock FROM lunette l JOIN declinaison d on l.id_lunette = d.id_lunette WHERE l.id_lunette =%s'''
+        sql = '''SELECT l.nom_lunette as nom, CONCAT(l.nom_lunette, '.jpg') as image, l.id_lunette as id_lunette, l.prix_lunette as prix, SUM(d.stock) AS stock 
+        FROM lunette l 
+        JOIN declinaison d on l.id_lunette = d.id_lunette 
+        WHERE l.id_lunette =%s'''
         mycursor.execute(sql, (id_article,))
         article = mycursor.fetchone()
+        print(article)
+
+        sql = """SELECT COUNT(id_couleur) AS nbCouleur 
+            FROM declinaison 
+            WHERE id_lunette =%s;
+            """
+
+        mycursor.execute(sql, id_article)
+        result = mycursor.fetchone()
+        NbDeclinaisons = result['nbCouleur']
+        print("NbDeclinaisons", NbDeclinaisons)
+
+        sql = '''SELECT d.*, c.libelle AS couleur, l.nom_lunette
+FROM declinaison d
+JOIN couleur c ON d.id_couleur = c.id_couleur
+JOIN lunette l ON d.id_lunette = l.id_lunette
+WHERE d.id_lunette =%s'''
+
+        mycursor.execute(sql, id_article)
+        declinaison = mycursor.fetchall()
+        print("Declinaison", declinaison)
 
 
         if article:
-            return render_template('admin/article/edit_article.html', article=article)
+            return render_template('admin/article/edit_article.html'
+                                   , article=article
+                                   , nbCouleur=NbDeclinaisons
+                                   , declinaison=declinaison)
         else:
             flash('L\'article sélectionné n\'existe pas', 'alert-danger')
             return redirect('/admin/article/show')
     elif request.method == 'POST':
+        mycursor = get_db().cursor()
         id_article = request.form.get('id_article')
         new_stock = request.form.get('new_stock')
+        id_couleur = request.form.get('id_couleur')
+        print('id_article_start', id_article)
+        print('new_stock_start', new_stock)
+        print('id_couleur_starth', id_couleur)
 
+        sql = '''SELECT COUNT(id_couleur) AS nbCouleur FROM declinaison 
+                    WHERE id_lunette =%s;'''
+        mycursor.execute(sql, (id_article,))
+
+        result = mycursor.fetchone()
+        NbDeclinaisons = result['nbCouleur']
+        print("NbDeclinaisons", NbDeclinaisons)
         mycursor = get_db().cursor()
-        sql = '''UPDATE declinaison SET stock = %s WHERE id_lunette = %s'''
-        mycursor.execute(sql, (new_stock, id_article))
-        get_db().commit()
+
+        if(NbDeclinaisons != 1):
+            sql = '''UPDATE declinaison SET stock =%s WHERE id_lunette =%s AND id_couleur =%s'''
+            mycursor.execute(sql, (new_stock, id_article, id_couleur))
+            get_db().commit()
+            print('id_article', id_article)
+            print('id_couleur', id_couleur)
+        else:
+            sql = '''UPDATE declinaison SET stock =%s WHERE id_lunette =%s'''
+            mycursor.execute(sql, (new_stock, id_article))
+            get_db().commit()
+            print('id_article', id_article)
+            print('new_stock', new_stock)
+
 
         flash('Stock mis à jour avec succès', 'alert-success')
         return redirect('/admin/article/show')

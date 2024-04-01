@@ -1,49 +1,62 @@
-{#
-article (dictionnaire)
-id_article, nom, type_article_id, prix, image
-    * option :
-        * stock ,
-        * nb_avis ,
-        * nb_declinaisons
-
-types_article : tableau de dictionnaires
-* tableau de "type_article"
-    * id_type_article, libelle
-#}
-
 {% extends 'admin/layout_admin.html' %}
 {% block title %}
-    <title>modifier un article</title>
+    <title>Modifier un article</title>
 {% endblock %}
 
 {% block body %}
-    <div class="container mt-5">
+<div class="container mt-5" style="width: 200%">
     <div class="row">
         <div class="col-md-6 offset-md-3">
             <h2>Modifier le stock d'un article</h2>
             <form action="/admin/article/edit" method="POST">
-                    <h3 class="card-title">
+                <h3 class="card-title">
                     <span style="color: #0b2e13">{{ article.nom }}</span><br>
-                    {{ article.prix }}
-                    €
-                    </h3>
-                    {%  if article.image is not none %}
-                        <img class="card-img-top rounded mx-auto d-block"  style="width:100px;height:100px"  src="{{ url_for('static', filename = 'images/')}}{{ article.image }}"  alt="image  de {{ article.nom }}" >
-                    {% else %} <img class="card-img-top rounded mx-auto d-block"   style="width:100px;height:100px"   src="{{ url_for('static', filename='images/no_photo.jpeg')}}"  alt="image  de {{ article.nom }}" >
-                    {% endif %}
-                    <hr>
-
-                <input type="hidden" name="id_article" value="{{ article.id_lunette }}">
-                <div class="form-group">
-                    <label for="stock">Nouveau stock:</label>
-                    <input type="number" class="form-control" id="stock" name="new_stock" value="{{ article.stock }}">
-                    <br><p>Stock actuel : {{ article.stock }}</p>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Modifier stock</button>
+                    {{ article.prix }} €
+                </h3>
+                {% if article.image %}
+                    <img class="card-img-top rounded mx-auto d-block" style="width:100px;height:100px" src="{{ url_for('static', filename='images/' + article.image) }}" alt="Image de {{ article.nom }}">
+                {% else %}
+                    <img class="card-img-top rounded mx-auto d-block" style="width:100px;height:100px" src="{{ url_for('static', filename='images/no_photo.jpeg') }}" alt="Image de {{ article.nom }}">
+                {% endif %}
+                <hr>
+                {% if nbCouleur == 1 %}
+                    <div class="form-group">
+                        <label for="stock">Nouveau stock :</label>
+                        <input type="number" class="form-control" id="stock" min="0" name="new_stock" value="{{ article.stock }}">
+                        <input type="hidden" name="id_article" value="{{ article.id_lunette }}">
+                        <br>
+                        <p>Stock actuel de la lunette : {{ article.stock }}</p>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Modifier stock</button>
+                     <a href="/admin/article/show"><button class="btn btn-secondary  mt-4">annuler</button></a>
+                {% else %}
+                    <div class="form-group">
+                        <label for="declinaisons">Déclinaisons :</label>
+                        <ul>
+                            {% for declinaison in declinaison %}
+                                <form action="/admin/article/edit" method="POST">
+                                    <div class="form-group">
+                                        <label for="stock">Déclinaison {{ declinaison.id_declinaison }} - {{ declinaison.couleur }} - Stock :</label>
+                                        <input type="number" class="form-control" id="{{ declinaison.id_declinaison }}" min="0" name="new_stock" value="{{ declinaison.stock }}" onchange="handleChange('{{ declinaison.id_declinaison }}')">
+                                        <input type="hidden" name="id_article" value="{{ declinaison.id_lunette }}">
+                                        <input type="hidden" name="id_couleur" value="{{ declinaison.id_couleur }}">
+                                    </div>
+                                    <button type="submit" id="submit_{{ declinaison.id_declinaison }}" class="btn btn-primary" style="display: none;">Modifier stock</button>
+                                </form>
+                            {% endfor %}
+                         <a href="/admin/article/show"><button class="btn btn-secondary  mt-4">annuler</button></a>
+                        </ul>
+                    </div>
+                {% endif %}
             </form>
         </div>
     </div>
 </div>
-
+<script>
+    function handleChange(idInput) {
+        var input = idInput;
+        var submitBtn = document.getElementById('submit_' + input);
+        submitBtn.style.display = 'flex';
+    }
+</script>
 {% endblock %}
