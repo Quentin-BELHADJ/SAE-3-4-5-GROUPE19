@@ -224,7 +224,7 @@ VALUES
     (5, 200, 1, 4),
     (5, 150, 2, 1),
     (5, 180, 3, 1),
-    (5, 250, 4, 1),
+    (6, 250, 4, 1),
     (1, 300, 5, 1),
     (1, 300, 5, 2),
     (1, 300, 5, 3),
@@ -241,7 +241,7 @@ VALUES
     (1, 50, 7, 4),
     (1, 50, 7, 5),
     (1, 250, 8, 1),
-    (1, 250, 8, 2),
+    (3, 250, 8, 2),
     (1, 250, 8, 3),
     (1, 250, 8, 4),
     (1, 250, 8, 5),
@@ -250,8 +250,8 @@ VALUES
     (1, 160, 9, 3),
     (1, 160, 9, 4),
     (1, 160, 9, 5),
-    (1, 100, 10, 1),
-    (1, 100, 10, 2),
+    (6, 100, 10, 1),
+    (2, 100, 10, 2),
     (1, 100, 10, 3),
     (1, 100, 10, 4),
     (1, 100, 10, 5),
@@ -280,8 +280,6 @@ VALUES
     (1, 199.99, 15, 3),
     (1, 199.99, 15, 4),
     (1, 199.99, 15, 5);
-
-SELECT * FROM declinaison;
 
 INSERT INTO adresse(nom,rue, code_postal,ville, id_utilisateur)
 VALUES ('NOM prénom', '1 rue de machin' ,90000, 'Belfort',2),
@@ -333,3 +331,23 @@ SELECT c.id_lunette, c.id_utilisateur, ROUND(RAND() * 3) + 2
 FROM commentaire c
 GROUP BY c.id_lunette, c.id_utilisateur
 HAVING COUNT(*) >= 1;
+
+INSERT INTO liste_envie VALUES 
+(4,2,"2024-04-01 22:07:42"),
+(8,2,"2024-04-01 22:08:14"),
+(9,2,'2024-04-01 22:07:41' );
+
+INSERT INTO historique VALUES
+(2,2,"2024-04-01 22:32:35"),
+(8,2,"2024-04-01 22:32:41"),
+(12,2,"2024-04-01 22:32:39"),
+(15,2,"2024-04-01 22:32:37"),
+(10,2,"2024-04-01 22:34:40");
+
+UPDATE lunette  SET nb_consultation = 3 WHERE id_lunette = 1;
+UPDATE lunette  SET nb_consultation = 4 WHERE id_lunette = 2;
+UPDATE lunette  SET nb_consultation = 6 WHERE id_lunette = 3;
+UPDATE lunette  SET nb_consultation = 3 WHERE id_lunette = 4;
+UPDATE lunette  SET nb_consultation = 10 WHERE id_lunette = 5;
+UPDATE lunette  SET nb_consultation = 7 WHERE id_lunette = 6;
+UPDATE lunette  SET nb_consultation = 7 WHERE id_lunette = 7;

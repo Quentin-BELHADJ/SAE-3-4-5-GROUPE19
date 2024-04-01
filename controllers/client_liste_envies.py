@@ -44,7 +44,7 @@ def client_liste_envies_delete():
 def client_liste_envies_show():
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    sql = """SELECT l.nom_lunette AS nom, l.id_lunette AS id_article, l.prix_lunette AS prix,  CONCAT(l.nom_lunette,'.jpg')  AS image FROM liste_envie le
+    sql = """SELECT l.nom_lunette AS nom, l.id_lunette AS id_article, l.prix_lunette AS prix,  CONCAT(l.nom_lunette,'.jpg')  AS image, (SELECT SUM(stock) FROM declinaison WHERE declinaison.id_lunette = l.id_lunette) AS stock FROM liste_envie le
         JOIN lunette l ON l.id_lunette = le.id_lunette
         WHERE le.id_utilisateur = %s
         ORDER BY le.date_update DESC"""
