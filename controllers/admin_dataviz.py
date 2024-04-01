@@ -35,7 +35,7 @@ def show_type_article_stock():
 def show_liste_envie_data():
     mycursor = get_db().cursor()
     sql = '''
-            SELECT nom_lunette, nb_consultation FROM lunette;
+            SELECT nom_lunette, nb_consultation FROM lunette ORDER BY nb_consultation, nom_lunette;
            '''
     mycursor.execute(sql)
     datas_show = mycursor.fetchall()
@@ -43,8 +43,7 @@ def show_liste_envie_data():
     values = [int(row['nb_consultation']) for row in datas_show]
     sql = '''
              SELECT cl.libelle_categorie AS libelle, (SELECT COUNT(*) FROM liste_envie le JOIN lunette l ON le.id_lunette = l.id_lunette WHERE l.id_categorie_lunette = cl.id_categorie_lunette) AS nombre_envies
-                FROM categorie_lunette cl
-            '''
+                FROM categorie_lunette cl ORDER BY nombre_envies DESC ,libelle'''
     mycursor.execute(sql)
     datas_show = mycursor.fetchall()
 
