@@ -23,6 +23,7 @@ articles (tableau de dictionnaires)
                             <div class="card-body border-dark rounded p-1">
                                 <a href="/client/article/details?id_article={{ article.id_article }}" >
                                 <h3 class="card-title">
+                                    <input type="hidden" name="id_article" value="{{ article.id_article }}">
                                     <span style="color: #0b2e13">{{ article.nom }}</span><br>
                                     {{ article.prix }}
                                     €
@@ -35,7 +36,7 @@ articles (tableau de dictionnaires)
                                 </a>
                                 <div class="row">
 {# #}                                {% if  article.stock is defined and article.stock != None %}
-{# #}                                     <a href="/admin/article/edit?id_article={{ article.id_article }}" style="width: 200px; margin-left: 90px" class="btn btn-success">Gestion du stock</a>
+{# #}                                     <a href="/admin/article/edit?id_article={{ article.id_article }}" style="width: 50%; display: flex; margin-right: 25%; margin-left: 25%; justify-content: center" class="btn btn-success">Gestion du stock</a>
 {# #}                                {% endif %}
                                      <div class="col-2 align-content-end">
                                     {% if article.liste_envie is defined %}
@@ -52,6 +53,9 @@ articles (tableau de dictionnaires)
                             {% if article.stock is defined and article.stock != None %}
                                 {% if article.stock > 0 %}
                                     <small class="text-muted">Stock restant : {{ article.stock }}</small>
+                                    {% if article.empty_stock_count > 0 %}
+                                        <small class="text-muted"> | Déclinaisons avec stock à 0 : {{ article.empty_stock_count }}</small>
+                                    {% endif %}
                                 {% else %}
                                     <small class="text-muted">Article momentanément indisponible</small>
                                 {% endif %}
