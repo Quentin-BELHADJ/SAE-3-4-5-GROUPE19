@@ -35,35 +35,49 @@ def show_type_article_stock():
 @admin_dataviz.route('/admin/dataviz/commentaires')
 def show_data_comm():
     mycursor = get_db().cursor()
+    sql = '''SELECT COUNT(id_lunette) as nb_commentaire FROM commentaire;'''
+    mycursor.execute(sql)
+    nb_commentaire = mycursor.fetchone()
+
+    print(nb_commentaire)
+
+    mycursor = get_db().cursor()
     sql = '''SELECT
-    c.id_categorie,
-    cat.libelle AS categorie,
-    COUNT(c.id_commentaire) AS nombre_commentaires,
-    IFNULL(AVG(n.note), 0) AS note_moyenne
+    cl.libelle_categorie AS categorie, cl.id_categorie_lunette as id_categorie,
+    COUNT(c.id_lunette) AS nombre_commentaires
 FROM
-    commentaire c
+    categorie_lunette cl
 LEFT JOIN
-    note n ON c.id_commentaire = n.id_commentaire
-JOIN
-    article a ON c.id_article = a.id_article
-JOIN
-    categorie cat ON a.id_categorie = cat.id_categorie
+    lunette l ON l.id_categorie_lunette = cl.id_categorie_lunette
+LEFT JOIN
+    commentaire c ON c.id_lunette = l.id_lunette
 GROUP BY
-    c.id_categorie, cat.libell
-           '''
-    # mycursor.execute(sql)
-    # datas_show = mycursor.fetchall()
-    # labels = [str(row['libelle']) for row in datas_show]
-    # values = [int(row['nbr_articles']) for row in datas_show]
+    cl.libelle_categorie,cl.id_categorie_lunette;'''
+    mycursor.execute(sql)
+    categorie_lunette = mycursor.fetchall()
 
-    # sql = '''
-    #
-    #        '''
-    datas_show = []
-    labels = []
-    values = []
+    print(categorie_lunette)
+    mycursor = get_db().cursor()
+    sql = '''SELECT
+    l.nom_lunette AS libelle,
+    IFNULL(AVG(n.note), 0) AS moyenne_note
+FROM
+    lunette l
+LEFT JOIN
+    note n ON n.id_lunette = l.id_lunette
+GROUP BY
+    l.nom_lunette;'''
+    mycursor.execute(sql)
+    datas_show = mycursor.fetchall()
+    labels = [str(row['libelle']) for row in datas_show]
+    values = [float(row['moyenne_note']) for row in datas_show]
 
-    return render_template('admin/dataviz/dataviz_commentaires.html'
+
+
+
+    return render_template('admin/dataviz/dataviz_commentaires.html',
+                            nb_commentaire = nb_commentaire,
+                           categorie_lunette=categorie_lunette
                            , datas_show=datas_show
                            , labels=labels
                            , values=values)
