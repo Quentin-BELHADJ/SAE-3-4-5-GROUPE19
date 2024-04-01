@@ -23,7 +23,8 @@ def client_article_show():                                 # remplace client_ind
     COUNT(DISTINCT c.date_publication) AS nb_avis,
     COUNT(DISTINCT n.id_utilisateur) AS nb_notes,
     IFNULL(AVG(n.note), 0) AS moy_notes,
-    GROUP_CONCAT(d.id_declinaison) AS id_declinaison
+    GROUP_CONCAT(d.id_declinaison) AS id_declinaison,
+    IF(EXISTS(SELECT * FROM liste_envie le WHERE le.id_lunette = l.id_lunette AND le.id_utilisateur = %s),1,0) AS liste_envie
 FROM
     lunette l
 JOIN
@@ -38,7 +39,7 @@ ORDER BY
     nom_lunette;
     '''
 
-    mycursor.execute(sql)
+    mycursor.execute(sql, id_client)
     lunettes = mycursor.fetchall()
 
     sql = '''SELECT id_marque AS id_type_article, libelle_marque AS libelle FROM marque ORDER BY libelle;'''
